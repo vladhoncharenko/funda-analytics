@@ -1,41 +1,43 @@
-using System.Net;
+using DataApi.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace DataApi
 {
     public class DataApi
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<DataApi> _logger;
+        private readonly IRealEstateBrokersService _realEstateBrokersService;
 
-        public DataApi(ILoggerFactory loggerFactory)
+        public DataApi(ILogger<DataApi> logger, IRealEstateBrokersService realEstateBrokersService)
         {
-            _logger = loggerFactory.CreateLogger<DataApi>();
+            _logger = logger;
+            _realEstateBrokersService = realEstateBrokersService;
         }
 
-        [Function("GetAllRealEstateAgents")]
-        public HttpResponseData GetAllRealEstateAgents([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateAgents")] HttpRequestData req)
+        [Function("GetAllRealEstateBrokers")]
+        public async Task<HttpResponseData> GetAllRealEstateBrokers([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateBrokers")] HttpRequestData req)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetRealEstateBrokersInfoAsync();
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-
-            response.WriteString("Welcome to Azure Functions!");
+            response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+            await response.WriteStringAsync(JsonConvert.SerializeObject(realEstateBrokersInfoAsync));
 
             return response;
         }
 
-        [Function("GetRealEstateAgentById")]
-        public HttpResponseData GetRealEstateAgentById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateAgents/{id}")] HttpRequestData req, int id)
+        [Function("GetRealEstateBrokerById")]
+        public async Task<HttpResponseData> GetRealEstateBrokerByIdAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateBrokers/{id}")] HttpRequestData req, int id)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var realEstateBrokerInfoAsync = await _realEstateBrokersService.GetRealEstateBrokerInfoAsync(id);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-
-            response.WriteString("Welcome to Azure Functions!");
+            response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+            await response.WriteStringAsync(JsonConvert.SerializeObject(realEstateBrokerInfoAsync));
 
             return response;
         }
