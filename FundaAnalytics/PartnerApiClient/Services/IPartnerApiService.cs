@@ -4,7 +4,7 @@ namespace PartnerApi.Services
 {
     public interface IPartnerApiService
     {
-        Task<IList<string>> GetAllNewPropertyListingIdsAsync(DateTime lastPropertyAddedDateTime);
+        Task<IList<string>> GetPropertyListingIdsAsync();
 
         Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId);
     }

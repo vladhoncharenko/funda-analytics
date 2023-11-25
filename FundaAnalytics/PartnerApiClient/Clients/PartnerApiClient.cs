@@ -5,7 +5,7 @@ using PartnerApi.Models.DTOs;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace PartnerApi.Client
+namespace PartnerApi.Clients
 {
     public class PartnerApiClient : IPartnerApiClient
     {

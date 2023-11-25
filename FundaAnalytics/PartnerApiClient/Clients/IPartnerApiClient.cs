@@ -1,6 +1,6 @@
 ﻿using PartnerApi.Models;
 
-namespace PartnerApi.Client
+namespace PartnerApi.Clients
 {
     public interface IPartnerApiClient
     {

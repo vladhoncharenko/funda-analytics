@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CacheClient\CacheClient.csproj" />
     <ProjectReference Include="..\PartnerAPIClient\PartnerApiClient.csproj" />
   </ItemGroup>
   <ItemGroup>

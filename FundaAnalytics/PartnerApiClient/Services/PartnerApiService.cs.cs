@@ -1,36 +1,36 @@
 ﻿using Microsoft.Extensions.Logging;
-using PartnerApi.Client;
+using PartnerApi.Clients;
 using PartnerApi.Models;
 
 namespace PartnerApi.Services
 {
     public class PartnerApiService : IPartnerApiService
     {
-        private readonly IPartnerApiClient _partnerAPIClient;
+        private readonly IPartnerApiClient _partnerApiClient;
         private readonly ILogger<PartnerApiService> _logger = null;
 
-        public PartnerApiService(IPartnerApiClient partnerAPIClient, ILogger<PartnerApiService> logger)
+        public PartnerApiService(IPartnerApiClient partnerApiClient, ILogger<PartnerApiService> logger)
         {
-            _partnerAPIClient = partnerAPIClient;
+            _partnerApiClient = partnerApiClient;
             _logger = logger;
         }
 
-        public async Task<IList<string>> GetAllNewPropertyListingIdsAsync(DateTime lastPropertyAddedDateTime)
+        public async Task<IList<string>> GetPropertyListingIdsAsync()
         {
             try
             {
-                var allNewPropertyListingIds = new List<string>();
-                var propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(1);
+                var allPropertyListingIds = new List<string>();
+                var propertyListingIds = await _partnerApiClient.GetPropertyListingIdsAsync(1);
                 var totalPages = propertyListingIds.PagingInfo.TotalPages;
-                allNewPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
+                allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
 
-                for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
+                for (var pageNumber = 2; pageNumber <= 2; pageNumber++)
                 {
-                    propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(pageNumber);
-                    allNewPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
+                    propertyListingIds = await _partnerApiClient.GetPropertyListingIdsAsync(pageNumber);
+                    allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
                 }
 
-                return allNewPropertyListingIds.Distinct().ToList();
+                return allPropertyListingIds.Distinct().ToList();
             }
             catch (Exception ex)
             {
@@ -42,7 +42,7 @@ namespace PartnerApi.Services
 
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
-            return await _partnerAPIClient.GetPropertyListingAsync(propertyFundaId);
+            return await _partnerApiClient.GetPropertyListingAsync(propertyFundaId);
         }
     }
 }
