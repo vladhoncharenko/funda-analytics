@@ -14,8 +14,21 @@ namespace DataApi
             _logger = loggerFactory.CreateLogger<DataApi>();
         }
 
-        [Function("DataApi")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+        [Function("GetAllRealEstateAgents")]
+        public HttpResponseData GetAllRealEstateAgents([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateAgents")] HttpRequestData req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+
+            response.WriteString("Welcome to Azure Functions!");
+
+            return response;
+        }
+
+        [Function("GetRealEstateAgentById")]
+        public HttpResponseData GetRealEstateAgentById([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateAgents/{id}")] HttpRequestData req, int id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
