@@ -1,13 +1,13 @@
 using CacheClient.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using PartnerApi.Models;
 using PartnerApi.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using PartnerApiModels.Models;
 
 namespace DataLoader
 {

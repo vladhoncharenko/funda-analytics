@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Mappers;
-using PartnerApi.Models;
-using PartnerApi.Models.DTOs;
 using System.Net.Http.Json;
 using System.Text.Json;
+using PartnerApiModels.DTOs;
+using PartnerApiModels.Models;
 
 namespace PartnerApi.Clients
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Clients;
-using PartnerApi.Models;
+using PartnerApiModels.Models;
 
 namespace PartnerApi.Services
 {

@@ -1,4 +1,4 @@
-﻿using PartnerApi.Models;
+﻿using PartnerApiModels.Models;
 
 namespace PartnerApi.Services
 {

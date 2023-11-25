@@ -2,9 +2,9 @@ using Azure.Messaging.ServiceBus;
 using CacheClient.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using PartnerApi.Models;
 using PartnerApi.Services;
 using System.Text.Json;
+using PartnerApiModels.Models;
 
 namespace DataHydrator
 {

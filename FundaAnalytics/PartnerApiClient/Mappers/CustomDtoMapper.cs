@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using PartnerApi.Models;
-using PartnerApi.Models.DTOs;
+using PartnerApiModels.DTOs;
+using PartnerApiModels.Models;
 
 namespace PartnerApi.Mappers
 {

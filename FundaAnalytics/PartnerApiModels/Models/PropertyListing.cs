@@ -1,4 +1,4 @@
-﻿namespace PartnerApi.Models
+﻿namespace PartnerApiModels.Models
 {
     public class PropertyListing
     {

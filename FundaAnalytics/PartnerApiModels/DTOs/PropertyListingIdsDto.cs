@@ -1,4 +1,4 @@
-﻿namespace PartnerApi.Models.DTOs
+﻿namespace PartnerApiModels.DTOs
 {
     public class PropertyListingIdsDto
     {
