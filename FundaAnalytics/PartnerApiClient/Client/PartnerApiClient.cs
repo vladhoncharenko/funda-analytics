@@ -25,10 +25,9 @@ namespace PartnerApi.Client
 
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
-            using var httpClient = _httpClientFactory.CreateClient("HttpClient");
-
             try
             {
+                using var httpClient = _httpClientFactory.CreateClient("HttpClient");
                 var requestUrl = $"{_partnerApiBaseUrl}{string.Format(_getPropertyListingUrlTemplate, _apiKey, propertyFundaId)}";
                 var propertyListingDto = await httpClient.GetFromJsonAsync<PropertyListingDto>(requestUrl, new JsonSerializerOptions(JsonSerializerDefaults.Web));
                 var propertyListing = ObjectMapper.Mapper.Map<PropertyListing>(propertyListingDto);
@@ -43,10 +42,11 @@ namespace PartnerApi.Client
             return null;
         }
 
-        public async Task<PropertyListingIds> GetPropertyListingIdsAsync(HttpClient httpClient, int page, int pageSize = 25)
+        public async Task<PropertyListingIds?> GetPropertyListingIdsAsync(int page, int pageSize = 25)
         {
             try
             {
+                using var httpClient = _httpClientFactory.CreateClient("HttpClient");
                 var requestUrl = $"{_partnerApiBaseUrl}{string.Format(_getPropertyListingIdsUrlTemplate, _apiKey, page, pageSize)}";
                 var propertyListingIdsDto = await httpClient.GetFromJsonAsync<PropertyListingIdsDto>(requestUrl, new JsonSerializerOptions(JsonSerializerDefaults.Web));
                 var propertyListingIds = ObjectMapper.Mapper.Map<PropertyListingIds>(propertyListingIdsDto);

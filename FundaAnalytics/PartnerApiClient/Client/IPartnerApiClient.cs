@@ -6,6 +6,6 @@ namespace PartnerApi.Client
     {
         Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId);
 
-        Task<PropertyListingIds> GetPropertyListingIdsAsync(HttpClient httpClient, int page, int pageSize = 25);
+        Task<PropertyListingIds?> GetPropertyListingIdsAsync(int page, int pageSize = 25);
     }
 }

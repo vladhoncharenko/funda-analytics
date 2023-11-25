@@ -8,37 +8,26 @@ namespace PartnerApi.Services
     {
         private readonly IPartnerApiClient _partnerAPIClient;
         private readonly ILogger<PartnerApiService> _logger = null;
-        private readonly IHttpClientFactory _httpClientFactory = null;
 
-        public PartnerApiService(IPartnerApiClient partnerAPIClient, ILogger<PartnerApiService> logger, IHttpClientFactory httpClientFactory)
+        public PartnerApiService(IPartnerApiClient partnerAPIClient, ILogger<PartnerApiService> logger)
         {
             _partnerAPIClient = partnerAPIClient;
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<IList<string>> GetAllNewPropertyListingIdsAsync(DateTime lastPropertyAddedDateTime)
         {
-            using var httpClient = _httpClientFactory.CreateClient("HttpClient");
-
             try
             {
                 var allNewPropertyListingIds = new List<string>();
-                var propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(httpClient, 1);
-                var (newPropertyListingIds, areAllPropertiesNew) = GetNewPropertyListingsOnly(propertyListingIds.PropertyListingInfo, lastPropertyAddedDateTime);
+                var propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(1);
+                var totalPages = propertyListingIds.PagingInfo.TotalPages;
+                allNewPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
 
-                allNewPropertyListingIds.AddRange(newPropertyListingIds);
-                if (!areAllPropertiesNew)
-                    return allNewPropertyListingIds.Distinct().ToList();
-
-                for (var pageNumber = 2; pageNumber <= propertyListingIds.PagingInfo.TotalPages; pageNumber++)
+                for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
                 {
-                    propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(httpClient, pageNumber);
-                    (newPropertyListingIds, areAllPropertiesNew) = GetNewPropertyListingsOnly(propertyListingIds.PropertyListingInfo, lastPropertyAddedDateTime);
-                    allNewPropertyListingIds.AddRange(newPropertyListingIds);
-
-                    if (!areAllPropertiesNew)
-                        break;
+                    propertyListingIds = await _partnerAPIClient.GetPropertyListingIdsAsync(pageNumber);
+                    allNewPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
                 }
 
                 return allNewPropertyListingIds.Distinct().ToList();
@@ -54,13 +43,6 @@ namespace PartnerApi.Services
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
             return await _partnerAPIClient.GetPropertyListingAsync(propertyFundaId);
-        }
-
-        private (List<string> newPropertyListingIds, bool areAllPropertiesNew) GetNewPropertyListingsOnly(List<PropertyListingInfo> propertyListingInfo, DateTime lastPropertyAddedDateTime)
-        {
-            var newPropertyListingsOnly = propertyListingInfo.Where(x => x.AddedDateTime > lastPropertyAddedDateTime).Select(x => x.Id).ToList();
-
-            return (newPropertyListingsOnly, newPropertyListingsOnly.Count() == propertyListingInfo.Count);
         }
     }
 }
