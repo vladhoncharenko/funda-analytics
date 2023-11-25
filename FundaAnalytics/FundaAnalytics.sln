@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheClient", "CacheClient\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataHydrator", "DataHydrator\DataHydrator.csproj", "{9884A7F2-828E-4ABD-AC7B-02081FBC4001}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataApi", "DataApi\DataApi.csproj", "{8B5AACC3-FA78-496D-B16D-40EF1978455A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9884A7F2-828E-4ABD-AC7B-02081FBC4001}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9884A7F2-828E-4ABD-AC7B-02081FBC4001}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9884A7F2-828E-4ABD-AC7B-02081FBC4001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B5AACC3-FA78-496D-B16D-40EF1978455A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5AACC3-FA78-496D-B16D-40EF1978455A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5AACC3-FA78-496D-B16D-40EF1978455A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5AACC3-FA78-496D-B16D-40EF1978455A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

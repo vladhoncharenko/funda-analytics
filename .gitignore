@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/FundaAnalytics/DataHydrator/local.settings.json
+/FundaAnalytics/DataLoader/local.settings.json
