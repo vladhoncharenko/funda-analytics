@@ -6,6 +6,7 @@ using PartnerApi.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace DataLoader
@@ -26,7 +27,7 @@ namespace DataLoader
         {
             try
             {
-                log.LogInformation($"Property listing IDs setting.");
+                log.LogInformation($"Property listing IDs loading.");
 
                 // Getting property listing IDs.
                 var propertyListingIds = await _partnerApiService.GetPropertyListingIdsAsync();
@@ -37,7 +38,7 @@ namespace DataLoader
 
                 // Sending Service Bus messages, so new listings data can be hydrated.
                 foreach (var propertyListingId in propertyListingIds)
-                    messagesCollector.Add(propertyListingId);
+                    messagesCollector.Add(JsonSerializer.Serialize(propertyListingId));
 
                 log.LogInformation($"{propertyListingIds.Count} property listing IDs were added.");
             }

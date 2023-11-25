@@ -2,8 +2,6 @@
 {
     public class PropertyListing
     {
-        public Guid Id { get; set; }
-
         public string FundaId { get; set; }
 
         public DateTime AddedDateTime { get; set; }

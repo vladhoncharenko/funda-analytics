@@ -24,7 +24,7 @@ namespace PartnerApi.Services
                 var totalPages = propertyListingIds.PagingInfo.TotalPages;
                 allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
 
-                for (var pageNumber = 2; pageNumber <= 2; pageNumber++)
+                for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
                 {
                     propertyListingIds = await _partnerApiClient.GetPropertyListingIdsAsync(pageNumber);
                     allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));

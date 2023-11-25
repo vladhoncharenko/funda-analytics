@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "ServiceBusConnectionString": "Endpoint=sb://funda-analytics.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=q/NIiEToktPKCpgrzHAnOQeI+VG/K/4Bd+ASbCBFbc0=",
+    "ServiceBusConnectionString": "",
     "RedisConnectionString": ""
   }
 }

@@ -2,8 +2,6 @@
 {
     public class RealEstateBroker
     {
-        public int Id { get; set; }
-
         public int FundaId { get; set; }
 
         public string Name { get; set; }
