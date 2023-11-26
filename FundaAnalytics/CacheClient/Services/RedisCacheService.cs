@@ -1,5 +1,5 @@
 ﻿using CacheClient.Clients;
-using Newtonsoft.Json;
+using System.Text.Json;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
 
@@ -16,7 +16,7 @@ namespace CacheClient.Services
 
         public Task<bool> SetDataAsync<T>(string key, string path, T value)
         {
-            return _jsonCacheCommands.SetAsync(key, path, JsonConvert.SerializeObject(value));
+            return _jsonCacheCommands.SetAsync(key, path, JsonSerializer.Serialize(value));
         }
 
         public Task<T?> GetDataAsync<T>(string key, string path)

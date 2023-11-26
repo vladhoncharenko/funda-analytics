@@ -1,4 +1,6 @@
-﻿namespace PartnerApiModels.DTOs
+﻿using PartnerApiModels.Models;
+
+namespace PartnerApiModels.DTOs
 {
     public class RealEstateBrokerInfoDto
     {
@@ -13,5 +15,9 @@
         public int AmountOfHomesWithBalconyOrTerrace { get; set; }
 
         public int AmountOfHomesWithGarage { get; set; }
+
+        public int TotalAmountOfHomes { get; set; }
+        
+        public List<PropertyListing>? PropertyListings { get; set; }
     }
 }

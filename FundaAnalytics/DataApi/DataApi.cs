@@ -3,7 +3,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DataApi
 {
@@ -25,7 +26,7 @@ namespace DataApi
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/json; charset=utf-8");
-            await response.WriteStringAsync(JsonConvert.SerializeObject(realEstateBrokersInfoAsync));
+            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
             return response;
         }
@@ -37,7 +38,7 @@ namespace DataApi
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/json; charset=utf-8");
-            await response.WriteStringAsync(JsonConvert.SerializeObject(realEstateBrokerInfoAsync));
+            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokerInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
             return response;
         }

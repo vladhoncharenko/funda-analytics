@@ -18,10 +18,27 @@ namespace DataApi.Services
 
         public async Task<RealEstateBrokerInfoDto> GetRealEstateBrokerInfoAsync(int fundaId)
         {
-            var realEstateBrokersList = await GetRealEstateBrokersInfoAsync();
-            var realEstateBrokerInfo = realEstateBrokersList.FirstOrDefault(reb => reb.FundaId.Equals(fundaId));
+            var propertyListings = await _cacheService.GetDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
 
-            return realEstateBrokerInfo;
+            var propertyListingsGroupedByBroker = propertyListings
+                .Values
+                .GroupBy(pl => pl.Broker);
+
+            var propertyBrokerListings = propertyListingsGroupedByBroker.Where(s => s.Key.FundaId == fundaId);
+
+            var propertyBrokerListingsDto = propertyBrokerListings.Select(kvp => new RealEstateBrokerInfoDto
+            {
+                FundaId = kvp.Key.FundaId,
+                Name = kvp.Key.Name,
+                PhoneNumber = kvp.Key.PhoneNumber,
+                AmountOfHomesWithGarden = kvp.Count(pl => pl.HasGarden),
+                AmountOfHomesWithBalconyOrTerrace = kvp.Count(pl => pl.HasBalconyOrTerrace),
+                AmountOfHomesWithGarage = kvp.Count(pl => pl.HasGarage),
+                TotalAmountOfHomes = kvp.Count(),
+                PropertyListings = kvp.ToList()
+            }).FirstOrDefault();
+
+            return propertyBrokerListingsDto;
         }
 
         public async Task<IList<RealEstateBrokerInfoDto>> GetRealEstateBrokersInfoAsync()
@@ -30,8 +47,7 @@ namespace DataApi.Services
 
             var propertyListingsGroupedByBroker = propertyListings
                 .Values
-                .GroupBy(pl => pl.Broker)
-                .ToDictionary(group => group.Key, group => group);
+                .GroupBy(pl => pl.Broker);
 
             var realEstateBrokersList = propertyListingsGroupedByBroker
                 .Select(kvp => new RealEstateBrokerInfoDto
@@ -39,9 +55,10 @@ namespace DataApi.Services
                     FundaId = kvp.Key.FundaId,
                     Name = kvp.Key.Name,
                     PhoneNumber = kvp.Key.PhoneNumber,
-                    AmountOfHomesWithGarden = kvp.Value.Count(pl => pl.HasGarden),
-                    AmountOfHomesWithBalconyOrTerrace = kvp.Value.Count(pl => pl.HasBalconyOrTerrace),
-                    AmountOfHomesWithGarage = kvp.Value.Count(pl => pl.HasGarage)
+                    AmountOfHomesWithGarden = kvp.Count(pl => pl.HasGarden),
+                    AmountOfHomesWithBalconyOrTerrace = kvp.Count(pl => pl.HasBalconyOrTerrace),
+                    AmountOfHomesWithGarage = kvp.Count(pl => pl.HasGarage),
+                    TotalAmountOfHomes = kvp.Count()
                 }).ToList();
 
             return realEstateBrokersList;
