@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Clients;
+using PartnerApiClient.Exceptions;
 using PartnerApiModels.Models;
 
 namespace PartnerApi.Services
@@ -37,6 +38,10 @@ namespace PartnerApi.Services
                 }
 
                 return allPropertyListingIds.Distinct().ToList();
+            }
+            catch (PartnerApiAccessException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

@@ -16,9 +16,9 @@ namespace DataLoader
     public class DataLoader
     {
         private readonly IPartnerApiService _partnerApiService;
-        private readonly ICacheService _cacheService;
+        private readonly IJsonCacheService _cacheService;
 
-        public DataLoader(IPartnerApiService partnerApiService, ICacheService cacheService)
+        public DataLoader(IPartnerApiService partnerApiService, IJsonCacheService cacheService)
         {
             _partnerApiService = partnerApiService;
             _cacheService = cacheService;
@@ -39,7 +39,7 @@ namespace DataLoader
 
                 // Adding property listing IDs to the cache.
                 var listingsToAdd = propertyListingIds.ToDictionary(key => key, value => (PropertyListing)null);
-                var isDataAdded = await _cacheService.SetDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$", listingsToAdd);
+                var isDataAdded = await _cacheService.SetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$", listingsToAdd);
                 if (!isDataAdded)
                     throw new CacheClientException("DataLoader was not able to add the data to the cache.");
 

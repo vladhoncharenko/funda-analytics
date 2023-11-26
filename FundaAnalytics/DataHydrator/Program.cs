@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PartnerApi.Clients;
 using PartnerApi.Services;
+using PartnerApiClient.RateLimiters;
 using PartnerApiClient.Utils;
 
 var host = new HostBuilder()
@@ -17,7 +18,9 @@ var host = new HostBuilder()
         services.AddSingleton<IPartnerApiService, PartnerApiService>();
         services.AddSingleton<IPartnerApiClient, PartnerApi.Clients.PartnerApiClient>();
         services.AddSingleton<IRedisConnectionFactory>(_ => new RedisConnectionFactory(Environment.GetEnvironmentVariable("RedisConnectionString")));
+        services.AddSingleton<IJsonCacheService, RedisJsonCacheService>();
         services.AddSingleton<ICacheService, RedisCacheService>();
+        services.AddSingleton<IRateLimiter, RateLimiter>();
     })
     .Build();
 

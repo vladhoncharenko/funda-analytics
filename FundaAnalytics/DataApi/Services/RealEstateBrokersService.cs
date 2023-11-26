@@ -8,9 +8,9 @@ namespace DataApi.Services
     public class RealEstateBrokersService : IRealEstateBrokersService
     {
         private readonly ILogger<RealEstateBrokersService> _logger;
-        private readonly ICacheService _cacheService;
+        private readonly IJsonCacheService _cacheService;
 
-        public RealEstateBrokersService(ILogger<RealEstateBrokersService> logger, ICacheService cacheService)
+        public RealEstateBrokersService(ILogger<RealEstateBrokersService> logger, IJsonCacheService cacheService)
         {
             _logger = logger;
             _cacheService = cacheService;
@@ -18,7 +18,7 @@ namespace DataApi.Services
 
         public async Task<RealEstateBrokerInfoDto> GetRealEstateBrokerInfoAsync(int fundaId)
         {
-            var propertyListings = await _cacheService.GetDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
+            var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
 
             var propertyListingsGroupedByBroker = propertyListings
                 .Values
@@ -43,7 +43,7 @@ namespace DataApi.Services
 
         public async Task<IList<RealEstateBrokerInfoDto>> GetRealEstateBrokersInfoAsync()
         {
-            var propertyListings = await _cacheService.GetDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
+            var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
 
             var propertyListingsGroupedByBroker = propertyListings
                 .Values

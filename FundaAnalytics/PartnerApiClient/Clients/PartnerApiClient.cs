@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Mappers;
+using PartnerApiClient.Exceptions;
+using PartnerApiClient.RateLimiters;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
 using System.Net.Http.Json;
@@ -11,16 +13,18 @@ namespace PartnerApi.Clients
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PartnerApiClient> _logger;
+        private readonly IRateLimiter _rateLimiter;
 
         private readonly string _partnerApiBaseUrl;
         private readonly string _getPropertyListingUrlTemplate;
         private readonly string _getPropertyListingIdsUrlTemplate;
         private readonly string _apiKey;
 
-        public PartnerApiClient(IHttpClientFactory httpClientFactory, ILogger<PartnerApiClient> logger)
+        public PartnerApiClient(IHttpClientFactory httpClientFactory, ILogger<PartnerApiClient> logger, IRateLimiter rateLimiter)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _rateLimiter = rateLimiter;
             _partnerApiBaseUrl = Environment.GetEnvironmentVariable("PartnerApiBaseUrl");
             _getPropertyListingUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingUrlTemplate");
             _getPropertyListingIdsUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingIdsUrlTemplate");
@@ -31,6 +35,9 @@ namespace PartnerApi.Clients
         {
             if (string.IsNullOrWhiteSpace(propertyFundaId))
                 throw new ArgumentException($"Invalid {nameof(propertyFundaId)} value.");
+
+            if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
+                throw new PartnerApiAccessException("Rate is limited for PartnerApi.");
 
             try
             {
@@ -53,6 +60,9 @@ namespace PartnerApi.Clients
         {
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 25;
+
+            if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
+                throw new PartnerApiAccessException("Rate is limited for PartnerApi.");
 
             try
             {

@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using PartnerApi.Clients;
 using PartnerApi.Services;
+using PartnerApiClient.RateLimiters;
 using PartnerApiClient.Utils;
 using System;
 
@@ -19,7 +20,9 @@ namespace DataLoader
             builder.Services.AddSingleton<IPartnerApiService, PartnerApiService>();
             builder.Services.AddSingleton<IPartnerApiClient, PartnerApi.Clients.PartnerApiClient>();
             builder.Services.AddSingleton<IRedisConnectionFactory>(_ => new RedisConnectionFactory(Environment.GetEnvironmentVariable("RedisConnectionString")));
+            builder.Services.AddSingleton<IJsonCacheService, RedisJsonCacheService>();
             builder.Services.AddSingleton<ICacheService, RedisCacheService>();
+            builder.Services.AddSingleton<IRateLimiter, RateLimiter>();
         }
     }
 }

@@ -1,27 +1,38 @@
 ﻿using CacheClient.Clients;
-using NRedisStack;
-using NRedisStack.RedisStackCommands;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace CacheClient.Services
 {
     public class RedisCacheService : ICacheService
     {
-        private readonly JsonCommands _jsonCacheCommands;
+        private readonly IDatabase _database;
 
         public RedisCacheService(IRedisConnectionFactory redisConnectionFactory)
         {
-            _jsonCacheCommands = redisConnectionFactory.GetConnection().GetDatabase().JSON(); ;
+            _database = redisConnectionFactory.GetConnection().GetDatabase();
         }
 
-        public Task<bool> SetDataAsync<T>(string key, string path, T value)
+        public async Task<bool> SetDataAsync<T>(string key, T value)
         {
-            return _jsonCacheCommands.SetAsync(key, path, JsonSerializer.Serialize(value));
+            return await _database.StringSetAsync(key, JsonSerializer.Serialize(value));
         }
 
-        public Task<T?> GetDataAsync<T>(string key, string path)
+        public async Task<T?> GetDataAsync<T>(string key)
         {
-            return _jsonCacheCommands.GetAsync<T>(key, path);
+            var redisValue = await _database.StringGetAsync(key);
+
+            return redisValue.IsNullOrEmpty ? default : JsonSerializer.Deserialize<T>(redisValue);
+        }
+
+        public async Task<long> StringDataIncrementAsync(string key)
+        {
+            return await _database.StringIncrementAsync(key);
+        }
+
+        public async Task<bool> DataKeyExpireAsync(string key, TimeSpan timeSpan)
+        {
+            return await _database.KeyExpireAsync(key, timeSpan);
         }
     }
 }

@@ -14,9 +14,9 @@ namespace DataHydrator
     {
         private readonly ILogger<DataHydrator> _logger;
         private readonly IPartnerApiService _partnerApiService;
-        private readonly ICacheService _cacheService;
+        private readonly IJsonCacheService _cacheService;
 
-        public DataHydrator(ILogger<DataHydrator> logger, IPartnerApiService partnerApiService, ICacheService cacheService)
+        public DataHydrator(ILogger<DataHydrator> logger, IPartnerApiService partnerApiService, IJsonCacheService cacheService)
         {
             _logger = logger;
             _partnerApiService = partnerApiService;
@@ -42,7 +42,7 @@ namespace DataHydrator
                     throw new PartnerApiAccessException();
 
                 // Saving property listing details.
-                var isDataAdded = await _cacheService.SetDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
+                var isDataAdded = await _cacheService.SetJsonDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
                 if (!isDataAdded)
                     throw new CacheClientException("DataHydrator was not able to add the data to the cache.");
 

@@ -12,7 +12,7 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
         services.AddSingleton<IRedisConnectionFactory>(_ => new RedisConnectionFactory(Environment.GetEnvironmentVariable("RedisConnectionString")));
-        services.AddSingleton<ICacheService, RedisCacheService>();
+        services.AddSingleton<IJsonCacheService, RedisJsonCacheService>();
         services.AddSingleton<IRealEstateBrokersService, RealEstateBrokersService>();
     })
     .Build();
