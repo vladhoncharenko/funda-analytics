@@ -2,6 +2,7 @@ using DataApi.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using PartnerApiModels.Utils;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -26,6 +27,7 @@ namespace DataApi
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+
             await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
             return response;
@@ -38,7 +40,11 @@ namespace DataApi
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/json; charset=utf-8");
-            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokerInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
+
+            var options = new JsonSerializerOptions();
+            options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.Converters.Add(new PropertyListingConverter());
+            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokerInfoAsync, options));
 
             return response;
         }
