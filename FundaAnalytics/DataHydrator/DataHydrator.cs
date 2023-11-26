@@ -1,10 +1,12 @@
 using Azure.Messaging.ServiceBus;
+using CacheClient.Exceptions;
 using CacheClient.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using PartnerApi.Services;
-using System.Text.Json;
+using PartnerApiClient.Exceptions;
 using PartnerApiModels.Models;
+using System.Text.Json;
 
 namespace DataHydrator
 {
@@ -31,13 +33,31 @@ namespace DataHydrator
                 propertyListingId = JsonSerializer.Deserialize<string>(message.Body);
                 _logger.LogInformation("Property listing hydration started for property ID {id}", propertyListingId);
 
+                if (propertyListingId == null)
+                    throw new ArgumentNullException(nameof(propertyListingId));
+
                 // Getting property listing details.
                 var propertyListing = await _partnerApiService.GetPropertyListingAsync(propertyListingId);
+                if (propertyListing == null)
+                    throw new PartnerApiAccessException();
 
                 // Saving property listing details.
-                await _cacheService.SetDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
+                var isDataAdded = await _cacheService.SetDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
+                if (!isDataAdded)
+                    throw new CacheClientException("DataHydrator was not able to add the data to the cache.");
 
                 _logger.LogInformation("Property listing hydration completed for property ID {id}", propertyListingId);
+            }
+            catch (PartnerApiAccessException e)
+            {
+                const string errorMessage = $"DataHydrator was not able to get the data from the Partner API. Throwing an error to retry message processing.";
+                _logger.LogError(errorMessage);
+                throw new Exception(errorMessage);
+            }
+            catch (CacheClientException e)
+            {
+                _logger.LogError("Cache error: {e}", e);
+                throw new Exception("Cache error. Throwing an error to retry message processing.");
             }
             catch (Exception e)
             {

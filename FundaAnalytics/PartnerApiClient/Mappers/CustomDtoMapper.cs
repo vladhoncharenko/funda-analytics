@@ -39,8 +39,8 @@ namespace PartnerApi.Mappers
 
         private DateTime ConvertJsonTimestampToDateTime(string jsonTimestamp)
         {
-            var startPos = jsonTimestamp.IndexOf("(") + 1;
-            var endPos = jsonTimestamp.IndexOf(")");
+            var startPos = jsonTimestamp.IndexOf("(", StringComparison.Ordinal) + 1;
+            var endPos = jsonTimestamp.IndexOf(")", StringComparison.Ordinal);
             var timestampPart = jsonTimestamp.Substring(startPos, endPos - startPos);
             var parts = timestampPart.Split('+');
             var milliseconds = long.Parse(parts[0]);

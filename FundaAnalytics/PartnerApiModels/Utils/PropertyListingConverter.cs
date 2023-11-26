@@ -8,7 +8,7 @@ namespace PartnerApiModels.Utils
     {
         public override PropertyListing Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return JsonSerializer.Deserialize<PropertyListing>(ref reader, options);
+            return (JsonSerializer.Deserialize<PropertyListing>(ref reader, options) ?? default) ?? throw new JsonException("Error during deserializing the object.");
         }
 
         public override void Write(Utf8JsonWriter writer, PropertyListing value, JsonSerializerOptions options)

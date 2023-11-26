@@ -1,7 +1,7 @@
 ﻿using CacheClient.Clients;
-using System.Text.Json;
 using NRedisStack;
 using NRedisStack.RedisStackCommands;
+using System.Text.Json;
 
 namespace CacheClient.Services
 {

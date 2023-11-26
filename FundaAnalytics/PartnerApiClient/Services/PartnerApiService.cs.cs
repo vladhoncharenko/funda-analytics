@@ -7,7 +7,7 @@ namespace PartnerApi.Services
     public class PartnerApiService : IPartnerApiService
     {
         private readonly IPartnerApiClient _partnerApiClient;
-        private readonly ILogger<PartnerApiService> _logger = null;
+        private readonly ILogger<PartnerApiService> _logger;
 
         public PartnerApiService(IPartnerApiClient partnerApiClient, ILogger<PartnerApiService> logger)
         {
@@ -21,12 +21,18 @@ namespace PartnerApi.Services
             {
                 var allPropertyListingIds = new List<string>();
                 var propertyListingIds = await _partnerApiClient.GetPropertyListingIdsAsync(1);
+                if (propertyListingIds == null)
+                    return new List<string>() { };
+
                 var totalPages = propertyListingIds.PagingInfo.TotalPages;
                 allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
 
                 for (var pageNumber = 2; pageNumber <= totalPages; pageNumber++)
                 {
                     propertyListingIds = await _partnerApiClient.GetPropertyListingIdsAsync(pageNumber);
+                    if (propertyListingIds == null)
+                        return new List<string>() { };
+
                     allPropertyListingIds.AddRange(propertyListingIds.PropertyListingInfo.Select(pli => pli.Id));
                 }
 

@@ -10,7 +10,7 @@ namespace PartnerApi.Mappers
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.ShouldMapProperty = p => p.GetMethod.IsPublic || p.GetMethod.IsAssembly;
+                cfg.ShouldMapProperty = p => p.GetMethod != null && (p.GetMethod.IsPublic || p.GetMethod.IsAssembly);
                 cfg.AddProfile<CustomDtoMapper>();
             });
 

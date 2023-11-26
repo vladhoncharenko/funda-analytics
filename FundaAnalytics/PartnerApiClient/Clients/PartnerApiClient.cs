@@ -1,30 +1,37 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Mappers;
-using System.Net.Http.Json;
-using System.Text.Json;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace PartnerApi.Clients
 {
     public class PartnerApiClient : IPartnerApiClient
     {
-        private readonly IHttpClientFactory _httpClientFactory = null;
-        private readonly ILogger<PartnerApiClient> _logger = null;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<PartnerApiClient> _logger;
 
-        private readonly string _partnerApiBaseUrl = "https://partnerapi.funda.nl/feeds/Aanbod.svc/json";
-        private readonly string _getPropertyListingUrlTemplate = "/detail/{0}/koop/{1}/";
-        private readonly string _getPropertyListingIdsUrlTemplate = "/{0}/?type=koop&zo=/amsterdam/sorteer-datum-af/&page={1}&pagesize={2}";
-        private readonly string _apiKey = "ac1b0b1572524640a0ecc54de453ea9f";
+        private readonly string _partnerApiBaseUrl;
+        private readonly string _getPropertyListingUrlTemplate;
+        private readonly string _getPropertyListingIdsUrlTemplate;
+        private readonly string _apiKey;
 
         public PartnerApiClient(IHttpClientFactory httpClientFactory, ILogger<PartnerApiClient> logger)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _partnerApiBaseUrl = Environment.GetEnvironmentVariable("PartnerApiBaseUrl");
+            _getPropertyListingUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingUrlTemplate");
+            _getPropertyListingIdsUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingIdsUrlTemplate");
+            _apiKey = Environment.GetEnvironmentVariable("ApiKey");
         }
 
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
+            if (string.IsNullOrWhiteSpace(propertyFundaId))
+                throw new ArgumentException($"Invalid {nameof(propertyFundaId)} value.");
+
             try
             {
                 using var httpClient = _httpClientFactory.CreateClient("HttpClient");
@@ -44,6 +51,9 @@ namespace PartnerApi.Clients
 
         public async Task<PropertyListingIds?> GetPropertyListingIdsAsync(int page, int pageSize = 25)
         {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 25;
+
             try
             {
                 using var httpClient = _httpClientFactory.CreateClient("HttpClient");
