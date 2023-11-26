@@ -6,6 +6,6 @@ namespace DataApi.Services
     {
         Task<IList<RealEstateBrokerInfoDto>> GetRealEstateBrokersInfoAsync();
 
-        Task<RealEstateBrokerInfoDto> GetRealEstateBrokerInfoAsync(int fundaId);
+        Task<RealEstateBrokerInfoDto?> GetRealEstateBrokerInfoAsync(int fundaId);
     }
 }

@@ -1,67 +1,63 @@
 using Azure.Messaging.ServiceBus;
-using CacheClient.Exceptions;
 using CacheClient.Services;
-using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using PartnerApi.Services;
-using PartnerApiClient.Exceptions;
 using PartnerApiModels.Models;
+using System;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace DataHydrator
 {
     public class DataHydrator
     {
-        private readonly ILogger<DataHydrator> _logger;
         private readonly IPartnerApiService _partnerApiService;
         private readonly IJsonCacheService _cacheService;
+        private readonly ServiceBusClient _serviceBusClient;
 
-        public DataHydrator(ILogger<DataHydrator> logger, IPartnerApiService partnerApiService, IJsonCacheService cacheService)
+        public DataHydrator(IPartnerApiService partnerApiService, IJsonCacheService cacheService, ServiceBusClient serviceBusClient)
         {
-            _logger = logger;
             _partnerApiService = partnerApiService;
             _cacheService = cacheService;
+            _serviceBusClient = serviceBusClient;
         }
 
-        [Function(nameof(DataHydrator))]
-        public async Task Run([ServiceBusTrigger("property-listings-to-process", Connection = "ServiceBusConnectionString")] ServiceBusReceivedMessage message)
+        [FunctionName("DataHydrator")]
+        public async Task Run([TimerTrigger("*/30 * * * * *")] TimerInfo myTimer, ILogger logger)
         {
-            var propertyListingId = string.Empty;
             try
             {
-                // Getting the property listing ID to hydrate.
-                propertyListingId = JsonSerializer.Deserialize<string>(message.Body);
-                _logger.LogInformation("Property listing hydration started for property ID {id}", propertyListingId);
+                var receiver = _serviceBusClient.CreateReceiver("property-listings-to-process");
+                var messages = await receiver.ReceiveMessagesAsync(Convert.ToInt32(Environment.GetEnvironmentVariable("RateLimitPerMinute")) / 2, TimeSpan.FromSeconds(15));
+                logger.LogInformation("DataHydrator got {idsAmount} to process", messages.Count);
 
-                if (propertyListingId == null)
-                    throw new ArgumentNullException(nameof(propertyListingId));
+                foreach (var message in messages)
+                {
+                    // Getting the property listing ID to hydrate.
+                    var propertyListingId = JsonSerializer.Deserialize<string>(message.Body);
+                    logger.LogInformation("Property listing hydration started for property ID {id}", propertyListingId);
+                    if (propertyListingId == null)
+                        continue;
 
-                // Getting property listing details.
-                var propertyListing = await _partnerApiService.GetPropertyListingAsync(propertyListingId);
-                if (propertyListing == null)
-                    throw new PartnerApiAccessException();
+                    // Getting property listing details.
+                    var propertyListing = await _partnerApiService.GetPropertyListingAsync(propertyListingId);
+                    if (propertyListing == null)
+                        continue;
 
-                // Saving property listing details.
-                var isDataAdded = await _cacheService.SetJsonDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
-                if (!isDataAdded)
-                    throw new CacheClientException("DataHydrator was not able to add the data to the cache.");
+                    // Saving property listing details.
+                    var isDataAdded = await _cacheService.SetJsonDataAsync<PropertyListing>("PropertyListings", $"$.{propertyListing.FundaId}", propertyListing);
+                    if (!isDataAdded)
+                        continue;
 
-                _logger.LogInformation("Property listing hydration completed for property ID {id}", propertyListingId);
-            }
-            catch (PartnerApiAccessException e)
-            {
-                const string errorMessage = $"DataHydrator was not able to get the data from the Partner API. Throwing an error to retry message processing.";
-                _logger.LogError(errorMessage);
-                throw new Exception(errorMessage);
-            }
-            catch (CacheClientException e)
-            {
-                _logger.LogError("Cache error: {e}", e);
-                throw new Exception("Cache error. Throwing an error to retry message processing.");
+                    await receiver.CompleteMessageAsync(message);
+                }
+
+                logger.LogInformation("Property listing hydration completed for {idsCount} property IDs.", messages.Count);
             }
             catch (Exception e)
             {
-                _logger.LogError("Error during executing DataHydrator for Property Listing {id}: {error}", propertyListingId, e);
+                logger.LogError("Error during executing DataHydrator for Property Listings: {error}.", e);
             }
         }
     }

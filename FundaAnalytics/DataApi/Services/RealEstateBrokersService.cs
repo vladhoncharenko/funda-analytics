@@ -16,12 +16,12 @@ namespace DataApi.Services
             _cacheService = cacheService;
         }
 
-        public async Task<RealEstateBrokerInfoDto> GetRealEstateBrokerInfoAsync(int fundaId)
+        public async Task<RealEstateBrokerInfoDto?> GetRealEstateBrokerInfoAsync(int fundaId)
         {
             var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
 
             var propertyListingsGroupedByBroker = propertyListings
-                .Values
+                .Values.Where(pl => pl != null)
                 .GroupBy(pl => pl.Broker);
 
             var propertyBrokerListings = propertyListingsGroupedByBroker.Where(s => s.Key.FundaId == fundaId);
@@ -46,7 +46,7 @@ namespace DataApi.Services
             var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
 
             var propertyListingsGroupedByBroker = propertyListings
-                .Values
+                .Values.Where(pl => pl != null)
                 .GroupBy(pl => pl.Broker);
 
             var realEstateBrokersList = propertyListingsGroupedByBroker

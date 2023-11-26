@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Mappers;
-using PartnerApiClient.Exceptions;
 using PartnerApiClient.RateLimiters;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
@@ -37,7 +36,7 @@ namespace PartnerApi.Clients
                 throw new ArgumentException($"Invalid {nameof(propertyFundaId)} value.");
 
             if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
-                throw new PartnerApiAccessException("Rate is limited for PartnerApi.");
+                return null;
 
             try
             {
@@ -62,7 +61,7 @@ namespace PartnerApi.Clients
             if (pageSize < 1) pageSize = 25;
 
             if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
-                throw new PartnerApiAccessException("Rate is limited for PartnerApi.");
+                return null;
 
             try
             {

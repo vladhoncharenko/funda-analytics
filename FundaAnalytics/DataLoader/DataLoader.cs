@@ -26,11 +26,11 @@ namespace DataLoader
 
         [FunctionName("DataLoader")]
         [ExponentialBackoffRetry(7, "00:00:15", "00:16:00")]
-        public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo myTimer, [ServiceBus("property-listings-to-process", Connection = "ServiceBusConnectionString")] ICollector<string> messagesCollector, ILogger log)
+        public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo myTimer, [ServiceBus("property-listings-to-process", Connection = "ServiceBusConnectionString")] ICollector<string> messagesCollector, ILogger logger)
         {
             try
             {
-                log.LogInformation($"Property listing IDs loading.");
+                logger.LogInformation($"Property listing IDs loading.");
 
                 // Getting property listing IDs.
                 var propertyListingIds = await _partnerApiService.GetPropertyListingIdsAsync();
@@ -47,22 +47,22 @@ namespace DataLoader
                 foreach (var propertyListingId in propertyListingIds)
                     messagesCollector.Add(JsonSerializer.Serialize(propertyListingId));
 
-                log.LogInformation($"{propertyListingIds.Count} property listing IDs were added.");
+                logger.LogInformation($"{propertyListingIds.Count} property listing IDs were added.");
             }
             catch (PartnerApiAccessException e)
             {
                 const string errorMessage = $"DataLoader was not able to get the data from the Partner API. Throwing an error to retry data loading.";
-                log.LogError(errorMessage);
+                logger.LogError(errorMessage);
                 throw new Exception(errorMessage);
             }
             catch (CacheClientException e)
             {
-                log.LogError("Cache error: {e}", e);
+                logger.LogError("Cache error: {e}", e);
                 throw new Exception("Cache error. Throwing an error to retry data adding.");
             }
             catch (Exception e)
             {
-                log.LogError($"Unknown Error during DataLoader execution: {e}.");
+                logger.LogError($"Unknown Error during DataLoader execution: {e}.");
             }
         }
     }

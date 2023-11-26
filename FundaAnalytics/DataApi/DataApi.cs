@@ -37,6 +37,8 @@ namespace DataApi
         public async Task<HttpResponseData> GetRealEstateBrokerByIdAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "RealEstateBrokers/{id}")] HttpRequestData req, int id)
         {
             var realEstateBrokerInfoAsync = await _realEstateBrokersService.GetRealEstateBrokerInfoAsync(id);
+            if (realEstateBrokerInfoAsync == null)
+                return req.CreateResponse(HttpStatusCode.NoContent);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/json; charset=utf-8");
