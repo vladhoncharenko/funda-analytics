@@ -1,4 +1,5 @@
 ﻿using CacheClient.Services;
+using DataApi.Enums;
 using Microsoft.Extensions.Logging;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
@@ -62,6 +63,22 @@ namespace DataApi.Services
                 }).ToList();
 
             return realEstateBrokersList;
+        }
+
+        public async Task<IList<RealEstateBrokerInfoDto>?> GetTopRealEstateBrokersInfoAsync(TopRealEstateBrokersCategoryEnum topRealEstateBrokersCategoryEnum)
+        {
+            var realEstateBrokersList = await GetRealEstateBrokersInfoAsync();
+
+            Func<RealEstateBrokerInfoDto, int> keySelector = topRealEstateBrokersCategoryEnum switch
+            {
+                TopRealEstateBrokersCategoryEnum.TotalAmountOfPropertyListings => broker => broker.TotalAmountOfHomes,
+                TopRealEstateBrokersCategoryEnum.PropertyListingsWithGarden => broker => broker.AmountOfHomesWithGarden,
+                TopRealEstateBrokersCategoryEnum.PropertyListingsWithBalconyOrTerrace => broker => broker.AmountOfHomesWithBalconyOrTerrace,
+                TopRealEstateBrokersCategoryEnum.PropertyListingsWithGarage => broker => broker.AmountOfHomesWithGarage,
+                _ => broker => broker.TotalAmountOfHomes
+            };
+
+            return realEstateBrokersList.OrderByDescending(keySelector).Take(20).ToList();
         }
     }
 }

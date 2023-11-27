@@ -1,4 +1,5 @@
-﻿using PartnerApiModels.DTOs;
+﻿using DataApi.Enums;
+using PartnerApiModels.DTOs;
 
 namespace DataApi.Services
 {
@@ -7,5 +8,7 @@ namespace DataApi.Services
         Task<IList<RealEstateBrokerInfoDto>> GetRealEstateBrokersInfoAsync();
 
         Task<RealEstateBrokerInfoDto?> GetRealEstateBrokerInfoAsync(int fundaId);
+
+        Task<IList<RealEstateBrokerInfoDto>?> GetTopRealEstateBrokersInfoAsync(TopRealEstateBrokersCategoryEnum topRealEstateBrokersCategoryEnum);
     }
 }
