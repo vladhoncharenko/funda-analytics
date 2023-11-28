@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using CacheClient.Wrappers;
+using StackExchange.Redis;
 
 namespace CacheClient.Clients
 {
@@ -11,6 +12,6 @@ namespace CacheClient.Clients
         /// Gets the connection to the Redis server.
         /// </summary>
         /// <returns>The ConnectionMultiplexer instance.</returns>
-        ConnectionMultiplexer GetConnection();
+        IConnectionMultiplexerWrapper GetConnection();
     }
 }

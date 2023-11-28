@@ -1,22 +1,21 @@
-﻿using StackExchange.Redis;
+﻿using CacheClient.Wrappers;
 
 namespace CacheClient.Clients
 {
     /// <inheritdoc/>
     public class RedisConnectionFactory : IRedisConnectionFactory
     {
-        private readonly Lazy<ConnectionMultiplexer> _lazyConnection;
+        private readonly Lazy<IConnectionMultiplexerWrapper> _lazyConnection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedisConnectionFactory"/> class.
         /// </summary>
-        /// <param name="connectionString">The connection string for the Redis server.</param>
-        public RedisConnectionFactory(string connectionString)
+        public RedisConnectionFactory(IConnectionMultiplexerWrapper connectionMultiplexerWrapper)
         {
-            _lazyConnection = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(connectionString));
+            _lazyConnection = new Lazy<IConnectionMultiplexerWrapper>(() => connectionMultiplexerWrapper);
         }
 
         /// <inheritdoc/>
-        public ConnectionMultiplexer GetConnection() => _lazyConnection.Value;
+        public IConnectionMultiplexerWrapper GetConnection() => _lazyConnection.Value;
     }
 }

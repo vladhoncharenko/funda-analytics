@@ -1,6 +1,6 @@
 ﻿using CacheClient.Clients;
+using CacheClient.Wrappers;
 using NRedisStack;
-using NRedisStack.RedisStackCommands;
 using System.Text.Json;
 
 namespace CacheClient.Services
@@ -8,11 +8,11 @@ namespace CacheClient.Services
     /// <inheritdoc/>
     public class RedisJsonCacheService : IJsonCacheService
     {
-        private readonly JsonCommands _jsonCacheCommands;
+        private readonly IJsonCommandsAsync _jsonCacheCommands;
 
-        public RedisJsonCacheService(IRedisConnectionFactory redisConnectionFactory)
+        public RedisJsonCacheService(IRedisConnectionFactory redisConnectionFactory, IJsonCommandsAsyncWrapper jsonCommandsAsyncWrapper)
         {
-            _jsonCacheCommands = redisConnectionFactory.GetConnection().GetDatabase().JSON();
+            _jsonCacheCommands = jsonCommandsAsyncWrapper.GetJsonCommandsAsync(redisConnectionFactory);
         }
 
         /// <inheritdoc/>

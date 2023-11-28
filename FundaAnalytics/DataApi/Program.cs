@@ -1,5 +1,6 @@
 using CacheClient.Clients;
 using CacheClient.Services;
+using CacheClient.Wrappers;
 using DataApi.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +13,10 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        services.AddSingleton<IRedisConnectionFactory>(_ => new RedisConnectionFactory(Environment.GetEnvironmentVariable("RedisConnectionString")));
+        services.AddSingleton<IConnectionMultiplexerWrapper>(_ => new ConnectionMultiplexerWrapper(Environment.GetEnvironmentVariable("RedisConnectionString")));
+        services.AddSingleton<IRedisConnectionFactory, RedisConnectionFactory>();
         services.AddSingleton<IJsonCacheService, RedisJsonCacheService>();
+        services.AddSingleton<IJsonCommandsAsyncWrapper, JsonCommandsAsyncWrapper>();
         services.AddSingleton<IRealEstateBrokersService, RealEstateBrokersService>();
     })
     .Build();
