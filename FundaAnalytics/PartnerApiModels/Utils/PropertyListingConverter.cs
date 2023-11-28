@@ -4,6 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace PartnerApiModels.Utils
 {
+    /// <summary>
+    /// Custom converter for PropertyListing class.
+    /// Used to prevent deserialization of the Broker property.
+    /// </summary>
     public class PropertyListingConverter : JsonConverter<PropertyListing>
     {
         public override PropertyListing Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

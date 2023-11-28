@@ -1,5 +1,8 @@
 ﻿namespace PartnerApiModels.Models
 {
+    /// <summary>
+    /// Property listing.
+    /// </summary>
     public class PropertyListing
     {
         public string FundaId { get; set; }

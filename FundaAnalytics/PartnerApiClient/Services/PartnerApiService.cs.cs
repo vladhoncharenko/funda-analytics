@@ -5,6 +5,7 @@ using PartnerApiModels.Models;
 
 namespace PartnerApi.Services
 {
+    /// <inheritdoc/>
     public class PartnerApiService : IPartnerApiService
     {
         private readonly IPartnerApiClient _partnerApiClient;
@@ -16,6 +17,7 @@ namespace PartnerApi.Services
             _logger = logger;
         }
 
+        /// <inheritdoc/>
         public async Task<IList<string>> GetPropertyListingIdsAsync()
         {
             try
@@ -51,6 +53,7 @@ namespace PartnerApi.Services
             return new List<string>() { };
         }
 
+        /// <inheritdoc/>
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
             return await _partnerApiClient.GetPropertyListingAsync(propertyFundaId);

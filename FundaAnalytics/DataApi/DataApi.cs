@@ -10,6 +10,10 @@ using System.Text.Json.Serialization;
 
 namespace DataApi
 {
+    /// <summary>
+    /// Represents an Azure Functions API for handling real estate brokers data.
+    /// API contains some duplications in the code, but it is done for consuming by the OpenAI Assistant.
+    /// </summary>
     public class DataApi
     {
         private readonly ILogger<DataApi> _logger;
@@ -21,6 +25,9 @@ namespace DataApi
             _realEstateBrokersService = realEstateBrokersService;
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about all real estate brokers.
+        /// </summary>
         [Function("GetAllRealEstateBrokers")]
         public async Task<HttpResponseData> GetAllRealEstateBrokers([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetAllRealEstateBrokers")] HttpRequestData req)
         {
@@ -34,6 +41,9 @@ namespace DataApi
             return response;
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about a specific real estate broker by ID.
+        /// </summary>
         [Function("GetRealEstateBrokerById")]
         public async Task<HttpResponseData> GetRealEstateBrokerByIdAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetRealEstateBrokerById/{id}")] HttpRequestData req, int id)
         {
@@ -52,30 +62,46 @@ namespace DataApi
             return response;
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about top real estate brokers with the most amount of homes.
+        /// </summary>
         [Function("GetTopRealEstateBrokersWithTheMostAmountOfHomes")]
         public async Task<HttpResponseData> GetTopRealEstateBrokersWithTheMostAmountOfHomes([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetTopRealEstateBrokersWithTheMostAmountOfHomes")] HttpRequestData req)
         {
             return await GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum.TotalAmountOfPropertyListings, req);
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about top real estate brokers with the most amount of homes with a garden.
+        /// </summary>
         [Function("GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarden")]
         public async Task<HttpResponseData> GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarden([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarden")] HttpRequestData req)
         {
             return await GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum.PropertyListingsWithGarden, req);
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about top real estate brokers with the most amount of homes with a balcony or terrace.
+        /// </summary>
         [Function("GetTopRealEstateBrokersWithTheMostAmountOfHomesWithBalconyOrTerrace")]
         public async Task<HttpResponseData> GetTopRealEstateBrokersWithTheMostAmountOfHomesWithBalconyOrTerrace([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetTopRealEstateBrokersWithTheMostAmountOfHomesWithBalconyOrTerrace")] HttpRequestData req)
         {
             return await GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum.PropertyListingsWithBalconyOrTerrace, req);
         }
 
+        /// <summary>
+        /// Azure Function to retrieve information about top real estate brokers with the most amount of homes with a garage.
+        /// </summary>
         [Function("GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarage")]
         public async Task<HttpResponseData> GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarage([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarage")] HttpRequestData req)
         {
             return await GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum.PropertyListingsWithGarage, req);
         }
 
+        /// <summary>
+        /// Common method to retrieve information about top real estate brokers by a specified category.
+        /// API contains some duplications in the code, but it is done for consuming by the OpenAI Assistant.
+        /// </summary>
         private async Task<HttpResponseData> GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum topRealEstateBrokersCategoryEnum, HttpRequestData req)
         {
             var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetTopRealEstateBrokersInfoAsync(topRealEstateBrokersCategoryEnum);

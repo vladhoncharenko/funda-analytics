@@ -8,6 +8,7 @@ using System.Text.Json;
 
 namespace PartnerApi.Clients
 {
+    /// <inheritdoc/>
     public class PartnerApiClient : IPartnerApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -30,6 +31,7 @@ namespace PartnerApi.Clients
             _apiKey = Environment.GetEnvironmentVariable("ApiKey");
         }
 
+        /// <inheritdoc/>
         public async Task<PropertyListing?> GetPropertyListingAsync(string propertyFundaId)
         {
             if (string.IsNullOrWhiteSpace(propertyFundaId))
@@ -55,6 +57,7 @@ namespace PartnerApi.Clients
             return null;
         }
 
+        /// <inheritdoc/>
         public async Task<PropertyListingIds?> GetPropertyListingIdsAsync(int page, int pageSize = 25)
         {
             if (page < 1) page = 1;

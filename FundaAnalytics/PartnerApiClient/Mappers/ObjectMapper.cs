@@ -2,6 +2,9 @@
 
 namespace PartnerApi.Mappers
 {
+    /// <summary>
+    /// Utility class for managing AutoMapper configurations.
+    /// </summary>
     public class ObjectMapper
     {
         public static IMapper Mapper => Lazy.Value;

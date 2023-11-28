@@ -10,11 +10,17 @@ using PartnerApiClient.Utils;
 using System;
 
 [assembly: FunctionsStartup(typeof(DataHydrator.Startup))]
-
 namespace DataHydrator
 {
+    /// <summary>
+    /// Configures services for the Azure Functions application.
+    /// </summary>
     public class Startup : FunctionsStartup
     {
+        /// <summary>
+        /// Configures services for the Azure Functions application.
+        /// </summary>
+        /// <param name="builder">The builder used to configure services.</param>
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpClient("HttpClient").AddPolicyHandler(PartnerApiRetryPolicy.GetRetryPolicy());

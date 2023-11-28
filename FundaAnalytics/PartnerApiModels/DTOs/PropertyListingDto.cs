@@ -1,5 +1,8 @@
 ﻿namespace PartnerApiModels.DTOs;
 
+/// <summary>
+/// DTO for Property Listing.
+/// </summary>
 public class PropertyListingDto
 {
     public string InternalId { get; set; }

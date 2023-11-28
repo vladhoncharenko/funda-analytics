@@ -2,6 +2,9 @@
 
 namespace PartnerApiModels.DTOs
 {
+    /// <summary>
+    /// DTO for the RealEstateBrokerInfo.
+    /// </summary>
     public class RealEstateBrokerInfoDto
     {
         public int FundaId { get; set; }

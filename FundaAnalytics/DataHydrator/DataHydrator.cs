@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace DataHydrator
 {
+    /// <summary>
+    /// Azure Function for hydrating property listing details from the Partner API and saving them to the cache.
+    /// </summary>
     public class DataHydrator
     {
         private readonly IPartnerApiService _partnerApiService;
@@ -23,6 +26,11 @@ namespace DataHydrator
             _serviceBusClient = serviceBusClient;
         }
 
+        /// <summary>
+        /// Azure Function that runs on a timer trigger to hydrate property listing details and save them to the cache.
+        /// </summary>
+        /// <param name="myTimer">The timer trigger information.</param>
+        /// <param name="logger">The logger for logging messages.</param>
         [FunctionName("DataHydrator")]
         public async Task Run([TimerTrigger("*/30 * * * * *")] TimerInfo myTimer, ILogger logger)
         {

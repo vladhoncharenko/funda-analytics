@@ -4,8 +4,14 @@ using PartnerApiModels.Models;
 
 namespace PartnerApi.Mappers
 {
+    /// <summary>
+    /// Class extends AutoMapper's Profile to define custom mapping configurations.
+    /// </summary>
     public class CustomDtoMapper : Profile
     {
+        /// <summary>
+        /// Constructor to configure mappings.
+        /// </summary>
         public CustomDtoMapper()
         {
             CreateMap<PropertyListingDto, PropertyListing>()
@@ -37,6 +43,11 @@ namespace PartnerApi.Mappers
                 }));
         }
 
+        /// <summary>
+        /// Converts a JSON timestamp to a DateTime instance.
+        /// </summary>
+        /// <param name="jsonTimestamp">The JSON timestamp string.</param>
+        /// <returns>The corresponding DateTime instance.</returns>
         private DateTime ConvertJsonTimestampToDateTime(string jsonTimestamp)
         {
             var startPos = jsonTimestamp.IndexOf("(", StringComparison.Ordinal) + 1;

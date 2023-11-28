@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace DataLoader
 {
+    /// <summary>
+    /// Azure Function for loading property listing IDs from the Partner API into the cache.
+    /// </summary>
     public class DataLoader
     {
         private readonly IPartnerApiService _partnerApiService;
@@ -24,6 +27,12 @@ namespace DataLoader
             _cacheService = cacheService;
         }
 
+        /// <summary>
+        /// Azure Function that runs on a timer trigger to load property listing IDs into the cache.
+        /// </summary>
+        /// <param name="myTimer">The timer trigger information.</param>
+        /// <param name="messagesCollector">The Service Bus message collector.</param>
+        /// <param name="logger">The logger for logging messages.</param>
         [FunctionName("DataLoader")]
         [ExponentialBackoffRetry(7, "00:00:15", "00:16:00")]
         public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo myTimer, [ServiceBus("property-listings-to-process", Connection = "ServiceBusConnectionString")] ICollector<string> messagesCollector, ILogger logger)

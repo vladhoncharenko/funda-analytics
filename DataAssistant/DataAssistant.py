@@ -6,9 +6,11 @@ import os
 import json
 import requests
 
+# Load environment variables from a .env file
 load_dotenv()
 base_api_url = os.getenv("base_api_url")
 
+# Functions to interact with a real estate API
 def get_real_estate_agent_listed_properties_by_id(funda_id: int):
     response = requests.get(base_api_url + "/GetRealEstateBrokerById/" + str(funda_id))
     return response.json()
@@ -29,6 +31,7 @@ def get_top_real_estate_brokers_with_the_most_amount_of_homes_with_garage():
     response = requests.get(base_api_url + "/GetTopRealEstateBrokersWithTheMostAmountOfHomesWithGarage")
     return response.json()
 
+# Class to manage interactions with the OpenAI assistant
 class AssistantManager:
     def __init__(self, api_key, model = "gpt-4-1106-preview"):
         self.client = OpenAI(api_key = api_key)
@@ -37,6 +40,7 @@ class AssistantManager:
         self.thread = None
         self.run = None
 
+    # Create a new assistant with specified instructions and tools
     def create_assistant(self, name, instructions, tools):
         self.assistant = self.client.beta.assistants.create(
             name = name,
@@ -45,6 +49,7 @@ class AssistantManager:
             model = self.model
         )
 
+     # Create a specific assistant for interacting with real estate data
     def create_funda_assistant(self):
         self.create_assistant(
             name = "Funda Real Estate Brokers Assistant 2",
@@ -120,15 +125,19 @@ class AssistantManager:
             }]
         )
     
+    # List all available assistants
     def list_assistants(self):
         return self.client.beta.assistants.list()
     
+    # Select a specific assistant by ID
     def select_assistant(self, assistant_id):
         self.assistant = self.client.beta.assistants.retrieve(assistant_id)
 
+    # Create a new conversation thread
     def create_thread(self):
         self.thread = self.client.beta.threads.create()
 
+    # Add a message to the conversation thread
     def add_message_to_thread(self, role, content):
         self.client.beta.threads.messages.create(
             thread_id = self.thread.id,
@@ -136,6 +145,7 @@ class AssistantManager:
             content = content
         )
 
+    # Run the assistant on the created thread with given instructions
     def run_assistant(self, instructions):
         self.run = self.client.beta.threads.runs.create(
             thread_id = self.thread.id,
@@ -143,6 +153,7 @@ class AssistantManager:
             instructions = instructions
         )
 
+    # Wait for the assistant to complete processing and handle outputs
     def wait_for_completion(self):
         while True:
             time.sleep(5)
@@ -160,6 +171,7 @@ class AssistantManager:
             else:
                 print("Waiting for the Assistant to process the question.")
 
+    # Process and print messages from the assistant
     def process_messages(self):
         messages = self.client.beta.threads.messages.list(thread_id = self.thread.id)
         messages.data = messages.data[::-1]
@@ -169,6 +181,7 @@ class AssistantManager:
             content = msg.content[0].text.value
             print(f"{role.capitalize()}: {content}")
 
+    # Call required functions based on assistant's needs
     def call_required_functions(self, required_actions):
         tool_outputs = []
 
@@ -218,6 +231,7 @@ class AssistantManager:
             tool_outputs = tool_outputs
         )
 
+# Main function to initiate the conversation with the assistant
 def main():
     print("Starting a conversation with the Assistant.")
     assistant_manager = AssistantManager(os.getenv("api_key"))
@@ -243,5 +257,6 @@ def main():
         assistant_manager.run_assistant(instructions = "Answer the user's question in a friendly and precise manner.")
         assistant_manager.wait_for_completion()
 
+# Entry point for the script
 if __name__ == '__main__':
     main()

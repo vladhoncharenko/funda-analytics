@@ -2,6 +2,7 @@
 
 namespace PartnerApiClient.RateLimiters
 {
+    /// <inheritdoc/>
     public class RateLimiter : IRateLimiter
     {
         private readonly ICacheService _cacheService;
@@ -13,6 +14,7 @@ namespace PartnerApiClient.RateLimiters
             _rateLimitPerMinute = Convert.ToInt32(Environment.GetEnvironmentVariable("RateLimitPerMinute"));
         }
 
+        /// <inheritdoc/>
         public async Task<bool> ShouldLimitRequestAsync(string key)
         {
             var value = await _cacheService.GetDataAsync<int?>(key);
