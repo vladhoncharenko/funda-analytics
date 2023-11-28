@@ -7,13 +7,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLoader", "DataLoader\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartnerApiClient", "PartnerAPIClient\PartnerApiClient.csproj", "{E51AC997-460C-4177-A328-0FB537552DD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheClient", "CacheClient\CacheClient.csproj", "{4ADB1D8B-B86C-41E7-BF49-3B5A2841C6B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CacheClient", "CacheClient\CacheClient.csproj", "{4ADB1D8B-B86C-41E7-BF49-3B5A2841C6B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataHydrator", "DataHydrator\DataHydrator.csproj", "{9884A7F2-828E-4ABD-AC7B-02081FBC4001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataHydrator", "DataHydrator\DataHydrator.csproj", "{9884A7F2-828E-4ABD-AC7B-02081FBC4001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataApi", "DataApi\DataApi.csproj", "{8B5AACC3-FA78-496D-B16D-40EF1978455A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataApi", "DataApi\DataApi.csproj", "{8B5AACC3-FA78-496D-B16D-40EF1978455A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartnerApiModels", "PartnerApiModels\PartnerApiModels.csproj", "{922BE70B-F7B9-4DEB-9AD3-3C033CE86DB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PartnerApiModels", "PartnerApiModels\PartnerApiModels.csproj", "{922BE70B-F7B9-4DEB-9AD3-3C033CE86DB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartnerApiClientTests", "PartnerApiClientTests\PartnerApiClientTests.csproj", "{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheClientTests", "CacheClientTests\CacheClientTests.csproj", "{32050609-1B2D-4C59-B734-F0DAD2B75BBC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D62F089D-56E2-4334-95B8-28B66DA8F2F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataApiTests", "DataApiTests\DataApiTests.csproj", "{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataHydratorTests", "DataHydratorTests\DataHydratorTests.csproj", "{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLoaderTests", "DataLoaderTests\DataLoaderTests.csproj", "{444F90A2-BAE8-427D-91CD-14686613242B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +57,36 @@ Global
 		{922BE70B-F7B9-4DEB-9AD3-3C033CE86DB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{922BE70B-F7B9-4DEB-9AD3-3C033CE86DB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{922BE70B-F7B9-4DEB-9AD3-3C033CE86DB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32050609-1B2D-4C59-B734-F0DAD2B75BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32050609-1B2D-4C59-B734-F0DAD2B75BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32050609-1B2D-4C59-B734-F0DAD2B75BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32050609-1B2D-4C59-B734-F0DAD2B75BBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{444F90A2-BAE8-427D-91CD-14686613242B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444F90A2-BAE8-427D-91CD-14686613242B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444F90A2-BAE8-427D-91CD-14686613242B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444F90A2-BAE8-427D-91CD-14686613242B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9EFA6708-CCF5-4346-8FEC-6973FDE27CC3} = {D62F089D-56E2-4334-95B8-28B66DA8F2F9}
+		{32050609-1B2D-4C59-B734-F0DAD2B75BBC} = {D62F089D-56E2-4334-95B8-28B66DA8F2F9}
+		{AD4ABA86-AF1A-4EEB-A759-D8B8BB4C994B} = {D62F089D-56E2-4334-95B8-28B66DA8F2F9}
+		{A4E9B18C-DFD0-4639-BE32-F3C2780E82DA} = {D62F089D-56E2-4334-95B8-28B66DA8F2F9}
+		{444F90A2-BAE8-427D-91CD-14686613242B} = {D62F089D-56E2-4334-95B8-28B66DA8F2F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE269FE6-911E-4166-8354-F0BD14E84340}
