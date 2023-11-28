@@ -6,7 +6,7 @@ using PartnerApi.Services;
 using PartnerApiClient.Exceptions;
 using PartnerApiModels.Models;
 
-namespace PartnerApiClientTests
+namespace PartnerApiClientTests.Services
 {
     [TestFixture]
     public class PartnerApiServiceTests

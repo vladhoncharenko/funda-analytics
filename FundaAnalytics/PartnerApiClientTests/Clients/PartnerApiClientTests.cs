@@ -8,7 +8,7 @@ using RichardSzalay.MockHttp;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace PartnerApiClientTests
+namespace PartnerApiClientTests.Clients
 {
     [TestFixture]
     public class PartnerApiClientTests
