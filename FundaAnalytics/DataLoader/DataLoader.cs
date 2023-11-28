@@ -35,7 +35,7 @@ namespace DataLoader
         /// <param name="logger">The logger for logging messages.</param>
         [FunctionName("DataLoader")]
         [ExponentialBackoffRetry(7, "00:00:15", "00:16:00")]
-        public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo myTimer, [ServiceBus("property-listings-to-process", Connection = "ServiceBusConnectionString")] ICollector<string> messagesCollector, ILogger logger)
+        public async Task Run([TimerTrigger("0 0 2 * * *")] TimerInfo myTimer, [ServiceBus("property-listings-to-process", Connection = "ServiceBusConnectionString")] ICollector<string> messagesCollector, ILogger logger)
         {
             try
             {
