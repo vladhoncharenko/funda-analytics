@@ -26,5 +26,11 @@ namespace PartnerApiClient.RateLimiters
 
             return false;
         }
+
+        /// <inheritdoc/>
+        public void WaitTillLimitEnd(int delay = 60000)
+        {
+            Thread.Sleep(delay);
+        }
     }
 }

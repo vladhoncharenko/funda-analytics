@@ -71,28 +71,6 @@ namespace PartnerApiClientTests.Clients
         }
 
         [Test]
-        public async Task GetPropertyListingAsync_RateLimiterLimit_ReturnsNull()
-        {
-            // Arrange
-            var client = CreateApiClient();
-            var propertyFundaId = _fixture.Create<string>();
-            var expectedPropertyListingDto = _fixture.Create<PropertyListingDto>();
-
-            _mockHttpMessageHandler
-                .Expect(HttpMethod.Get, TestBaseUrl + PartnerApiBaseUrl + PropertyListingUrlTemplate)
-                .Respond(HttpStatusCode.OK, JsonContent.Create(expectedPropertyListingDto));
-
-            _httpClientFactory.CreateClient("HttpClient").Returns(_httpClient);
-            _rateLimiter.ShouldLimitRequestAsync("PartnerApi").Returns(true);
-
-            // Act
-            var result = await client.GetPropertyListingAsync(propertyFundaId);
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
-        [Test]
         public async Task GetPropertyListingAsync_InvalidId_ThrowsArgumentException()
         {
             // Arrange
@@ -154,33 +132,11 @@ namespace PartnerApiClientTests.Clients
             Assert.IsInstanceOf<PropertyListingIds>(result);
         }
 
-        [Test]
-        public async Task GetPropertyListingIdsAsync_RateLimiterLimit_ReturnsNull()
-        {
-            // Arrange
-            var client = CreateApiClient();
-            var page = _fixture.Create<int>();
-            var expectedPropertyListingIdsDto = _fixture.Create<PropertyListingIdsDto>();
-
-            _mockHttpMessageHandler
-                .Expect(HttpMethod.Get, TestBaseUrl + PartnerApiBaseUrl + PropertyListingIdsUrlTemplate)
-                .Respond(HttpStatusCode.OK, JsonContent.Create(expectedPropertyListingIdsDto));
-
-            _httpClientFactory.CreateClient("HttpClient").Returns(_httpClient);
-            _rateLimiter.ShouldLimitRequestAsync("PartnerApi").Returns(true);
-
-            // Act
-            var result = await client.GetPropertyListingIdsAsync(page);
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
         #endregion
 
         private PartnerApi.Clients.PartnerApiClient CreateApiClient()
         {
-            return new PartnerApi.Clients.PartnerApiClient(_httpClientFactory, _logger, _rateLimiter);
+            return new PartnerApi.Clients.PartnerApiClient(_httpClientFactory, _logger);
         }
     }
 }

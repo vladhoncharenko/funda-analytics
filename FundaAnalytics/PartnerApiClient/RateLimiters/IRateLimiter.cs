@@ -11,5 +11,11 @@
         /// <param name="key">The key identifying the request type.</param>
         /// <returns>True if the request should be limited, otherwise false.</returns>
         Task<bool> ShouldLimitRequestAsync(string key);
+
+        /// <summary>
+        /// Waits until the rate limit is over.
+        /// </summary>
+        /// <param name="delay"></param>
+        void WaitTillLimitEnd(int delay = 60000);
     }
 }

@@ -4,6 +4,7 @@ using NSubstitute.ExceptionExtensions;
 using PartnerApi.Clients;
 using PartnerApi.Services;
 using PartnerApiClient.Exceptions;
+using PartnerApiClient.RateLimiters;
 using PartnerApiModels.Models;
 
 namespace PartnerApiClientTests.Services
@@ -14,13 +15,15 @@ namespace PartnerApiClientTests.Services
         private IPartnerApiClient _partnerApiClient;
         private ILogger<PartnerApiService> _logger;
         private PartnerApiService _partnerApiService;
+        private IRateLimiter _rateLimiter;
 
         [SetUp]
         public void Setup()
         {
             _partnerApiClient = Substitute.For<IPartnerApiClient>();
             _logger = Substitute.For<ILogger<PartnerApiService>>();
-            _partnerApiService = new PartnerApiService(_partnerApiClient, _logger);
+            _rateLimiter = Substitute.For<IRateLimiter>();
+            _partnerApiService = new PartnerApiService(_partnerApiClient, _logger, _rateLimiter);
         }
 
         [Test]
@@ -47,6 +50,34 @@ namespace PartnerApiClientTests.Services
 
             // Assert
             CollectionAssert.AreEquivalent(new[] { "1", "2", "3", "4" }, result);
+        }
+
+        [Test]
+        public async Task GetPropertyListingIdsAsync_Successful_RateLimiterPausesAnExecution()
+        {
+            // Arrange
+            var propertyListingIdsPage1 = new PropertyListingIds
+            {
+                PagingInfo = new PagingInfo { TotalPages = 2 },
+                PropertyListingInfo = new List<PropertyListingInfo> { new PropertyListingInfo { Id = "1" }, new PropertyListingInfo { Id = "2" } }
+            };
+
+            var propertyListingIdsPage2 = new PropertyListingIds
+            {
+                PagingInfo = new PagingInfo { TotalPages = 2 },
+                PropertyListingInfo = new List<PropertyListingInfo> { new PropertyListingInfo { Id = "3" }, new PropertyListingInfo { Id = "4" } }
+            };
+
+            _partnerApiClient.GetPropertyListingIdsAsync(1).Returns(propertyListingIdsPage1);
+            _partnerApiClient.GetPropertyListingIdsAsync(2).Returns(propertyListingIdsPage2);
+            _rateLimiter.ShouldLimitRequestAsync("PartnerApiRateLimit").Returns(true);
+
+            // Act
+            var result = await _partnerApiService.GetPropertyListingIdsAsync();
+
+            // Assert
+            CollectionAssert.AreEquivalent(new[] { "1", "2", "3", "4" }, result);
+            _rateLimiter.Received(2).WaitTillLimitEnd();
         }
 
         [Test]

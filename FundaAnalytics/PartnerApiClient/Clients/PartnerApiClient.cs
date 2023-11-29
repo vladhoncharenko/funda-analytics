@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using PartnerApi.Mappers;
-using PartnerApiClient.RateLimiters;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
 using System.Net.Http.Json;
@@ -13,18 +12,16 @@ namespace PartnerApi.Clients
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<PartnerApiClient> _logger;
-        private readonly IRateLimiter _rateLimiter;
 
         private readonly string _partnerApiBaseUrl;
         private readonly string _getPropertyListingUrlTemplate;
         private readonly string _getPropertyListingIdsUrlTemplate;
         private readonly string _apiKey;
 
-        public PartnerApiClient(IHttpClientFactory httpClientFactory, ILogger<PartnerApiClient> logger, IRateLimiter rateLimiter)
+        public PartnerApiClient(IHttpClientFactory httpClientFactory, ILogger<PartnerApiClient> logger)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
-            _rateLimiter = rateLimiter;
             _partnerApiBaseUrl = Environment.GetEnvironmentVariable("PartnerApiBaseUrl");
             _getPropertyListingUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingUrlTemplate");
             _getPropertyListingIdsUrlTemplate = Environment.GetEnvironmentVariable("PropertyListingIdsUrlTemplate");
@@ -36,9 +33,6 @@ namespace PartnerApi.Clients
         {
             if (string.IsNullOrWhiteSpace(propertyFundaId))
                 throw new ArgumentException($"Invalid {nameof(propertyFundaId)} value.");
-
-            if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
-                return null;
 
             try
             {
@@ -62,9 +56,6 @@ namespace PartnerApi.Clients
         {
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 25;
-
-            if (await _rateLimiter.ShouldLimitRequestAsync("PartnerApi"))
-                return null;
 
             try
             {
