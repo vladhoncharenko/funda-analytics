@@ -19,7 +19,7 @@ namespace PartnerApi.Mappers
                 .ForMember(dest => dest.FundaId, opt => opt.MapFrom(src => src.InternalId))
                 .ForMember(dest => dest.HasBalconyOrTerrace, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.BalkonDakterras)))
                 .ForMember(dest => dest.HasGarden, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Tuin)))
-                .ForMember(dest => dest.HasGarage, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.BalkonDakterras)))
+                .ForMember(dest => dest.HasGarage, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Garage)))
                 .ForMember(dest => dest.AddedDateTime, opt => opt.MapFrom(src => ConvertJsonTimestampToDateTime(src.PublicatieDatum)))
                 .ForMember(dest => dest.Broker, opt => opt.MapFrom(src => new RealEstateBroker
                 {
