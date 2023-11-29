@@ -68,10 +68,13 @@ As a first step, let’s take a look at what data we have. To do this, I did som
     
     <br>
     In this documentation, it was mentioned that partnerapi.funda.nl is a production URL, so my next thought was that if we have an API endpoint, it should be used somewhere. So I searched on GitHub for “partnerapi funda Aanbod.svc json get details” with the hope of finding a method for getting property details. And I was lucky enough to find URL https://partnerapi.funda.nl/feeds/Aanbod.svc/json/detail/{apiKey}/koop/{propertyId}/ for getting home info:
+	<br>
 
+	<br>
     <img src="ReadmeImages/Untitled 7.png" width="60%"/>
     
     <br>
+	
     I tried to call the URL I found, and it worked!
 
     <img src="ReadmeImages/Untitled 8.png" width="50%"/>
@@ -298,49 +301,49 @@ As a first step, let’s run the ‘DataLoader’ function.
 
 During the run, I confirmed that the rate limit variable is updating in Redis:
 
-<img src="ReadmeImages/Untitled 18.png" width="50%"/>
+<img src="ReadmeImages/Untitled 18.png" width="60%"/>
 
 <br>
 
 In the picture below, you can see that the function was running for 10 minutes:
 
-<img src="ReadmeImages/Untitled 19.png" width="50%"/>
+<img src="ReadmeImages/Untitled 19.png" width="60%"/>
 
 <br>
 
 If we check the message queue, we will see that the first message was added at 11:34, so adding all events took 8 minutes, and calling Partner API took 2 minutes, minus a 1-minute delay:
 
-<img src="ReadmeImages/Untitled 20.png" width="50%"/>
+<img src="ReadmeImages/Untitled 20.png" width="60%"/>
 
 <br>
 
 If we take a look at the queue itself, we will see that we have 3215 messages added:
 
-<img src="ReadmeImages/Untitled 21.png" width="50%"/>
+<img src="ReadmeImages/Untitled 21.png" width="60%"/>
 
 <br>
 
 Let’s take a look at the data in Redis. We can see a JSON file with a length of 3215 items and a key size of 234 KB:
 
-<img src="ReadmeImages/Untitled 22.png" width="50%"/>
+<img src="ReadmeImages/Untitled 22.png" width="60%"/>
 
 <br>
 
 Now, let’s run ‘DataHydrator’:
 
-<img src="ReadmeImages/Untitled 23.png" width="50%"/>
+<img src="ReadmeImages/Untitled 23.png" width="60%"/>
 
 <br>
 
 Let’s check the queue. As you can see in the picture, the amount of messages is decreasing:
 
-<img src="ReadmeImages/Untitled 24.png" width="50%"/>
+<img src="ReadmeImages/Untitled 24.png" width="60%"/>
 
 <br>
 
 And at the end, the queue is empty:
 
-<img src="ReadmeImages/Untitled 25.png" width="50%"/>
+<img src="ReadmeImages/Untitled 25.png" width="60%"/>
 
 <br>
 
@@ -348,17 +351,17 @@ Execution of the ‘DataHydrator’ took an hour. This is because of the way mes
 
 The full dataset is 2MB:
 
-<img src="ReadmeImages/Untitled 26.png" width="50%"/>
+<img src="ReadmeImages/Untitled 26.png" width="60%"/>
 
 Example of added data for a particular property listing:
 
-<img src="ReadmeImages/Untitled 27.png" width="50%"/>
+<img src="ReadmeImages/Untitled 27.png" width="60%"/>
 
 <br>
 
 Let’s check the API. To get all the info and make all the calculations, it takes 411 ms:
 
-<img src="ReadmeImages/Untitled 28.png" width="50%"/>
+<img src="ReadmeImages/Untitled 28.png" width="60%"/>
 
 <br>
 
@@ -560,15 +563,15 @@ And now, the most interesting part.
 
 So, I added an array of questions to the assistant script and ran it:
 
-<img src="ReadmeImages/Untitled 29.png" width="50%"/>
+<img src="ReadmeImages/Untitled 29.png" width="60%"/>
 
 <br>
 
 I got the following output (I put the text version below):
 
-<img src="ReadmeImages/Untitled 30.png" width="50%"/>
+<img src="ReadmeImages/Untitled 30.png" width="60%"/>
 
-<img src="ReadmeImages/Untitled 31.png" width="50%"/>
+<img src="ReadmeImages/Untitled 31.png" width="60%"/>
 
 <br>
 
