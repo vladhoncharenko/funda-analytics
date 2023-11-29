@@ -32,45 +32,49 @@ As a first step, let’s take a look at what data we have. To do this, I did som
 
 1. In the API response, we can see that data storage contains 3246 properties:
 
-    <img src="ReadmeImages/Untitled.png" width="40%"/>
+    <img src="ReadmeImages/Untitled.png" width="50%"/>
 <br>
 
 2. After experimenting with the page size, I can say that the max page size is 25:
 
-    <img src="ReadmeImages/Untitled 1.png" width="40%"/>
+    <img src="ReadmeImages/Untitled 1.png" width="50%"/>
 
-    <img src="ReadmeImages/Untitled 2.png" width="40%"/>
+	<br>
+
+	Response:
+	
+    <img src="ReadmeImages/Untitled 2.png" width="50%"/>
 <br>
 
 3. The data provided by the API is not matching with the production environment. On production, we have 3954 homes without filters, and API returns 3246 properties without filters. Also, I noticed that a lot of properties became available at night.
 
-    <img src="ReadmeImages/Untitled 3.png" width="40%"/>
+    <img src="ReadmeImages/Untitled 3.png" width="50%"/>
 <br>
 
 
 4. I tried to use the provided WSHTTP endpoint to get some data but was not able to access it:
 
-    <img src="ReadmeImages/Untitled 4.png" width="40%"/>
+    <img src="ReadmeImages/Untitled 4.png" width="50%"/>
 <br>
 
 5. GET request to [https://partnerapi.funda.nl/feeds/Aanbod.svc/json/{apiKey}/?type=koop&zo=/amsterdam/&page=1&pagesize=25](https://partnerapi.funda.nl/feeds/Aanbod.svc/json/%7BapiKey%7D/?type=koop&zo=/amsterdam/&page=1&pagesize=25) returns data, but that data does not contain any information about the property, so we cannot say does this property has a garden or not.
 
-    <img src="ReadmeImages/Untitled 5.png" width="50%"/>
+    <img src="ReadmeImages/Untitled 5.png" width="60%"/>
 <br>
 
 6. My next thought was: If Funda has an API endpoint for accessing the data, there should be documentation on how to use it, and I need to find that documentation in order to get the endpoint for getting particular property details. So, after searching on the internet, I came across some old API documentation:
 
-    <img src="ReadmeImages/Untitled 6.png" width="50%"/>
+    <img src="ReadmeImages/Untitled 6.png" width="60%"/>
     
     <br>
     In this documentation, it was mentioned that partnerapi.funda.nl is a production URL, so my next thought was that if we have an API endpoint, it should be used somewhere. So I searched on GitHub for “partnerapi funda Aanbod.svc json get details” with the hope of finding a method for getting property details. And I was lucky enough to find URL https://partnerapi.funda.nl/feeds/Aanbod.svc/json/detail/{apiKey}/koop/{propertyId}/ for getting home info:
 
-    <img src="ReadmeImages/Untitled 7.png" width="50%"/>
+    <img src="ReadmeImages/Untitled 7.png" width="60%"/>
     
     <br>
     I tried to call the URL I found, and it worked!
 
-    <img src="ReadmeImages/Untitled 8.png" width="40%"/>
+    <img src="ReadmeImages/Untitled 8.png" width="50%"/>
 
     This response contained all the needed info, even more: Tuin, BalkonDakterras, Garage, etc.
 
@@ -95,7 +99,7 @@ Rate limiting can be implemented by using two mechanisms: 1) As we would have Re
 <br>
 Please find below a simple scheme of the architecture:
 
-<img src="ReadmeImages/option1.drawio.png" width="40%"/>
+<img src="ReadmeImages/option1.drawio.png" width="55%"/>
 
 <br>
 
@@ -139,7 +143,7 @@ Now, let’s dive into more details for each step.
 2. As a next step, we need to save the data somewhere. For this purpose, I propose to store the data in the cache because: 1) There is no point in data duplication since Funda already stores it. 2) Storing in a cache is faster. 3) I would like to test the performance of the [JSON module in Redis.](https://redis.io/docs/data-types/json/)
 3. After saving it in the cache, we need to have the data hydrated. For this, we will have a separate function. But to maintain this process for each property listing, I suggest adding a new message to an Azure Service Bus queue so that another function can consume messages and hydrate the data.
 
-<img src="ReadmeImages/option1-Page-3.drawio.png" width="40%"/>
+<img src="ReadmeImages/option1-Page-3.drawio.png" width="55%"/>
 
 <br>
 
@@ -149,7 +153,7 @@ Now, let’s dive into more details for each step.
 2. Then, we can iterate over received messages and call Partner API to get the property details (for this assignment, let’s take only a limited amount of fields).
 3. After getting the data, we can update the particular key of the JSON in the Redis cache.
 
-<img src="ReadmeImages/option1-Page-3.drawio_(1).png" width="40%"/>
+<img src="ReadmeImages/option1-Page-3.drawio_(1).png" width="55%"/>
 
 <br>
 
@@ -167,7 +171,7 @@ More details can be found here: [https://platform.openai.com/docs/assistants/ove
 2. The assistant will call the OpenAI API to form the response.
 3. In case some extra data is needed, it will call out API and pass this data back to OpenAI, and only then will it craft the message based on the data obtained.
 
-<img src="ReadmeImages/option1-Page-2.drawio.png" width="40%"/>
+<img src="ReadmeImages/option1-Page-2.drawio.png" width="55%"/>
 
 <br>
 
@@ -223,49 +227,49 @@ So, the solution consists of the following projects:
 6. PartnerAPIClient - Wrapper around Partner API.
 7. PartnerAPiModels - Models and DTOs used in the project.
 
-<img src="ReadmeImages/Untitled 9.png" width="30%"/>
+<img src="ReadmeImages/Untitled 9.png" width="50%"/>
 
 <br>
 
 PartnerApiModels:
 
-<img src="ReadmeImages/Untitled 10.png" width="30%"/>
+<img src="ReadmeImages/Untitled 10.png" width="50%"/>
 
 <br>
 
 PartnerApiClient:
 
-<img src="ReadmeImages/Untitled 11.png" width="30%"/>
+<img src="ReadmeImages/Untitled 11.png" width="50%"/>
 
 <br>
 
 CacheClient:
 
-<img src="ReadmeImages/Untitled 12.png" width="30%"/>
+<img src="ReadmeImages/Untitled 12.png" width="50%"/>
 
 <br>
 
 DataLoader:
 
-<img src="ReadmeImages/Untitled 13.png" width="30%"/>
+<img src="ReadmeImages/Untitled 13.png" width="50%"/>
 
 <br>
 
 DataHydrator:
 
-<img src="ReadmeImages/Untitled 14.png" width="30%"/>
+<img src="ReadmeImages/Untitled 14.png" width="50%"/>
 
 <br>
 
 DataApi:
 
-<img src="ReadmeImages/Untitled 15.png" width="30%"/>
+<img src="ReadmeImages/Untitled 15.png" width="50%"/>
 
 <br>
 
 DataAssistant script outside of the solution:
 
-<img src="ReadmeImages/Untitled 16.png" width="30%"/>
+<img src="ReadmeImages/Untitled 16.png" width="50%"/>
 
 <br>
 
@@ -282,7 +286,7 @@ The DataApi function contains six GET methods mentioned below. They all have suc
 
 As a final step of the development, I covered some services with unit tests. 
 
-<img src="ReadmeImages/Untitled 17.png" width="40%"/>
+<img src="ReadmeImages/Untitled 17.png" width="50%"/>
 
 ## Testing Notes
 
@@ -294,49 +298,49 @@ As a first step, let’s run the ‘DataLoader’ function.
 
 During the run, I confirmed that the rate limit variable is updating in Redis:
 
-<img src="ReadmeImages/Untitled 18.png" width="40%"/>
+<img src="ReadmeImages/Untitled 18.png" width="50%"/>
 
 <br>
 
 In the picture below, you can see that the function was running for 10 minutes:
 
-<img src="ReadmeImages/Untitled 19.png" width="40%"/>
+<img src="ReadmeImages/Untitled 19.png" width="50%"/>
 
 <br>
 
 If we check the message queue, we will see that the first message was added at 11:34, so adding all events took 8 minutes, and calling Partner API took 2 minutes, minus a 1-minute delay:
 
-<img src="ReadmeImages/Untitled 20.png" width="40%"/>
+<img src="ReadmeImages/Untitled 20.png" width="50%"/>
 
 <br>
 
 If we take a look at the queue itself, we will see that we have 3215 messages added:
 
-<img src="ReadmeImages/Untitled 21.png" width="40%"/>
+<img src="ReadmeImages/Untitled 21.png" width="50%"/>
 
 <br>
 
 Let’s take a look at the data in Redis. We can see a JSON file with a length of 3215 items and a key size of 234 KB:
 
-<img src="ReadmeImages/Untitled 22.png" width="40%"/>
+<img src="ReadmeImages/Untitled 22.png" width="50%"/>
 
 <br>
 
 Now, let’s run ‘DataHydrator’:
 
-<img src="ReadmeImages/Untitled 23.png" width="40%"/>
+<img src="ReadmeImages/Untitled 23.png" width="50%"/>
 
 <br>
 
 Let’s check the queue. As you can see in the picture, the amount of messages is decreasing:
 
-<img src="ReadmeImages/Untitled 24.png" width="40%"/>
+<img src="ReadmeImages/Untitled 24.png" width="50%"/>
 
 <br>
 
 And at the end, the queue is empty:
 
-<img src="ReadmeImages/Untitled 25.png" width="40%"/>
+<img src="ReadmeImages/Untitled 25.png" width="50%"/>
 
 <br>
 
@@ -344,17 +348,17 @@ Execution of the ‘DataHydrator’ took an hour. This is because of the way mes
 
 The full dataset is 2MB:
 
-<img src="ReadmeImages/Untitled 26.png" width="40%"/>
+<img src="ReadmeImages/Untitled 26.png" width="50%"/>
 
 Example of added data for a particular property listing:
 
-<img src="ReadmeImages/Untitled 27.png" width="40%"/>
+<img src="ReadmeImages/Untitled 27.png" width="50%"/>
 
 <br>
 
 Let’s check the API. To get all the info and make all the calculations, it takes 411 ms:
 
-<img src="ReadmeImages/Untitled 28.png" width="40%"/>
+<img src="ReadmeImages/Untitled 28.png" width="50%"/>
 
 <br>
 
@@ -402,7 +406,7 @@ Now, let’s take a look at the result.
 		"AmountOfHomesWithGarage":1,
 		"TotalAmountOfHomes":7
 	},
-...........
+	...........
 ```
 
 <br>
@@ -556,15 +560,15 @@ And now, the most interesting part.
 
 So, I added an array of questions to the assistant script and ran it:
 
-<img src="ReadmeImages/Untitled 29.png" width="40%"/>
+<img src="ReadmeImages/Untitled 29.png" width="50%"/>
 
 <br>
 
 I got the following output (I put the text version below):
 
-<img src="ReadmeImages/Untitled 30.png" width="40%"/>
+<img src="ReadmeImages/Untitled 30.png" width="50%"/>
 
-<img src="ReadmeImages/Untitled 31.png" width="40%"/>
+<img src="ReadmeImages/Untitled 31.png" width="50%"/>
 
 <br>
 
@@ -579,8 +583,6 @@ As you can see, in some cases, the assistant performs API calls to our DataApi t
 **Assistant:** The real estate broker with the most homes is Broersma Wonen. Their phone number is 020-3059777.
 
 *In this question, the assistant made a call to the API, got the list of the brokers with the most properties, and selected the name and phone.*
-
-<br>
 
 <br>
 
@@ -623,8 +625,6 @@ As you can see, in some cases, the assistant performs API calls to our DataApi t
 
 <br>
 
-<br>
-
 **User:** Give me property listings of the broker with the most amount of balconies.
 
 **Assistant:** The real estate broker with the most amount of homes with a balcony or terrace is Ramón Mossel Makelaardij o.g. B.V. Currently, they have a total of 60 homes listed that feature either a balcony or terrace. Here are some of their property listings:
@@ -661,8 +661,6 @@ Please note that this is not an exhaustive list of all their listings, but a sam
 
 <br>
 
-<br>
-
 **User:** Give me property listing adresses of the broker with the most amount of garages.
 
 **Assistant:** The real estate broker with the most amount of homes with garages is Ramón Mossel Makelaardij o.g. B.V. Here's a selection of their property listings:
@@ -681,8 +679,6 @@ Please note that this is not an exhaustive list of all their listings, but a sam
 Please note that this is not the complete list of their properties with garages. If you require further details on additional properties or specific information about the listings, feel free to let me know!
 
 *During answering this question, the assistant also made 2 API calls. The first one is to get the list of brokers with the most homes with garages. Then, a second call is needed to get the property listings of a particular broker.*
-
-<br>
 
 <br>
 
