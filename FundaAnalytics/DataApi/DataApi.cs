@@ -31,14 +31,25 @@ namespace DataApi
         [Function("GetAllRealEstateBrokers")]
         public async Task<HttpResponseData> GetAllRealEstateBrokers([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetAllRealEstateBrokers")] HttpRequestData req)
         {
-            var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetRealEstateBrokersInfoAsync();
+            try
+            {
+                var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetRealEstateBrokersInfoAsync();
+                if (!realEstateBrokersInfoAsync.Any())
+                    return req.CreateResponse(HttpStatusCode.NoContent);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                response.Headers.Add("Content-Type", "text/json; charset=utf-8");
 
-            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
+                await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
-            return response;
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while getting all real estate brokers: {error}", e);
+
+                return req.CreateResponse(HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -47,19 +58,31 @@ namespace DataApi
         [Function("GetRealEstateBrokerById")]
         public async Task<HttpResponseData> GetRealEstateBrokerByIdAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetRealEstateBrokerById/{id}")] HttpRequestData req, int id)
         {
-            var realEstateBrokerInfoAsync = await _realEstateBrokersService.GetRealEstateBrokerInfoAsync(id);
-            if (realEstateBrokerInfoAsync == null)
-                return req.CreateResponse(HttpStatusCode.NoContent);
+            try
+            {
+                if (id <= 0)
+                    return req.CreateResponse(HttpStatusCode.BadRequest);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+                var realEstateBrokerInfoAsync = await _realEstateBrokersService.GetRealEstateBrokerInfoAsync(id);
+                if (realEstateBrokerInfoAsync == null)
+                    return req.CreateResponse(HttpStatusCode.NoContent);
 
-            var options = new JsonSerializerOptions();
-            options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.Converters.Add(new PropertyListingConverter());
-            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokerInfoAsync, options));
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                response.Headers.Add("Content-Type", "text/json; charset=utf-8");
 
-            return response;
+                var options = new JsonSerializerOptions();
+                options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                options.Converters.Add(new PropertyListingConverter());
+                await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokerInfoAsync, options));
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while getting real estate broker by ID: {error}", e);
+
+                return req.CreateResponse(HttpStatusCode.InternalServerError);
+            }
         }
 
         /// <summary>
@@ -104,14 +127,25 @@ namespace DataApi
         /// </summary>
         private async Task<HttpResponseData> GetTopRealEstateBrokersByCategory(TopRealEstateBrokersCategoryEnum topRealEstateBrokersCategoryEnum, HttpRequestData req)
         {
-            var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetTopRealEstateBrokersInfoAsync(topRealEstateBrokersCategoryEnum);
+            try
+            {
+                var realEstateBrokersInfoAsync = await _realEstateBrokersService.GetTopRealEstateBrokersInfoAsync(topRealEstateBrokersCategoryEnum);
+                if (realEstateBrokersInfoAsync == null)
+                    return req.CreateResponse(HttpStatusCode.NoContent);
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/json; charset=utf-8");
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                response.Headers.Add("Content-Type", "text/json; charset=utf-8");
 
-            await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
+                await response.WriteStringAsync(JsonSerializer.Serialize(realEstateBrokersInfoAsync, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }));
 
-            return response;
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while getting real estate brokers by category: {error}", e);
+
+                return req.CreateResponse(HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

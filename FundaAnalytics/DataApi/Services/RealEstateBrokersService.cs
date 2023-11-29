@@ -1,6 +1,5 @@
 ﻿using CacheClient.Services;
 using DataApi.Enums;
-using Microsoft.Extensions.Logging;
 using PartnerApiModels.DTOs;
 using PartnerApiModels.Models;
 
@@ -8,18 +7,18 @@ namespace DataApi.Services
 {
     public class RealEstateBrokersService : IRealEstateBrokersService
     {
-        private readonly ILogger<RealEstateBrokersService> _logger;
         private readonly IJsonCacheService _cacheService;
 
-        public RealEstateBrokersService(ILogger<RealEstateBrokersService> logger, IJsonCacheService cacheService)
+        public RealEstateBrokersService(IJsonCacheService cacheService)
         {
-            _logger = logger;
             _cacheService = cacheService;
         }
 
         public async Task<RealEstateBrokerInfoDto?> GetRealEstateBrokerInfoAsync(int fundaId)
         {
             var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
+            if (propertyListings == null)
+                return null;
 
             var propertyListingsGroupedByBroker = propertyListings
                 .Values.Where(pl => pl != null)
@@ -45,6 +44,8 @@ namespace DataApi.Services
         public async Task<IList<RealEstateBrokerInfoDto>> GetRealEstateBrokersInfoAsync()
         {
             var propertyListings = await _cacheService.GetJsonDataAsync<IDictionary<string, PropertyListing>>("PropertyListings", "$");
+            if (propertyListings == null)
+                return new List<RealEstateBrokerInfoDto>();
 
             var propertyListingsGroupedByBroker = propertyListings
                 .Values.Where(pl => pl != null)
